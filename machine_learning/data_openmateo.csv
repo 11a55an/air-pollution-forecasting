@@ -1,6 +1,3 @@
-latitude,longitude,elevation,utc_offset_seconds,timezone,timezone_abbreviation,
-32.4,74,238,0,GMT,GMT,
-,,,,,,
 time,pm10 (μg/m³),pm2_5 (μg/m³),carbon_monoxide (μg/m³),nitrogen_dioxide (μg/m³),sulphur_dioxide (μg/m³),ozone (μg/m³)
 2022-08-04T00:00,85.9,59.8,588,13.9,9.4,87
 2022-08-04T01:00,77.5,53.8,580,13.9,11,93
