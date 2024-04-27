@@ -1,0 +1,10 @@
+Best Performing Models (RMSE):
+
+	Temp: LSTM Model 2 (0.28)
+	AQI: LSTM Model 3 (2.055)
+	CO: LSTM Model 2 (2.84)
+	NO2: LSTM Model 3 (0.776)
+	O3: LSTM Model 2 (2.74)
+	SO2: LSTM Model 2 (0.656)
+	PM2.5: LSTM Model 2 (0.945)
+	PM10: LSTM Model 2 (1.2876)
