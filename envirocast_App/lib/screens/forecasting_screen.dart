@@ -314,9 +314,21 @@ class ForecastScreen extends StatelessWidget {
                               ],
                             )),
 
-                        SizedBox(
-                          height: 50,
+                         SizedBox(
+                          height: 40,
                         ),
+                        Text(
+                          'Weather Forecast',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 24,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+
                         Container(
                           height: 200,
                           child: ListView.separated(
