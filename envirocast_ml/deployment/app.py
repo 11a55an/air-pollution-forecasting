@@ -104,6 +104,8 @@ temp_model = load_model("temp.keras")
 def forecast_next_steps(model, data, n_steps=168):
     forecast = []
     data = np.array(data).reshape((1, 1, len(data)))
+    # Reverse the array
+    data = data[::-1]
 
     for _ in range(n_steps):
         # Make prediction
@@ -266,8 +268,7 @@ def temp():
     temp = dataTemp[['app_temp']]
     temp_data = temp[-168:]
     forecast = forecast_next_steps(temp_model,temp_data)
-    # forecast = forecast * stdopTemp + meanopTemp
-    forecast = scalerTemp.inverse_transform(forecast)
+    forecast = forecast * stdopTemp + meanopTemp
     return jsonify(forecast.tolist())
 
 # Schedule the task to run every hour
