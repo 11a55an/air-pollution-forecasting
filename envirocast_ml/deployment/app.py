@@ -21,7 +21,7 @@ scaled_AQI = scalerAQI.fit_transform(valuesAQI)
 pollAQI = np.array(df["aqi"])
 meanopAQI = pollAQI.mean()
 stdopAQI = pollAQI.std()
-aqi_model = load_model("aqi.keras")
+aqi_model = load_model("1dcnn_aqi.keras")
 
 # CO Data
 co = df[['co']]
@@ -32,7 +32,7 @@ scaled_CO = scalerCO.fit_transform(valuesCO)
 pollCO = np.array(df["co"])
 meanopCO = pollCO.mean()
 stdopCO = pollCO.std()
-co_model = load_model("co.keras")
+co_model = load_model("1dcnn_co.keras")
 
 # NO2 Data
 no2 = df[['no2']]
@@ -43,7 +43,7 @@ scaled_NO = scalerNO.fit_transform(valuesNO)
 pollNO = np.array(df["no2"])
 meanopNO = pollNO.mean()
 stdopNO = pollNO.std()
-no_model = load_model("no2.keras")
+no_model = load_model("1dcnn_no2.keras")
 
 # O3 Data
 o3 = df[['o3']]
@@ -54,7 +54,7 @@ scaled_O3 = scalerO3.fit_transform(valuesO3)
 pollO3 = np.array(df["o3"])
 meanopO3 = pollO3.mean()
 stdopO3 = pollO3.std()
-o3_model = load_model("o3.keras")
+o3_model = load_model("1dcnn_o3.keras")
 
 # PM10 Data
 pm10 = df[['o3']]
@@ -65,7 +65,7 @@ scaled_PM10 = scalerPM10.fit_transform(valuesPM10)
 pollPM10 = np.array(df["pm10"])
 meanopPM10 = pollPM10.mean()
 stdopPM10 = pollPM10.std()
-pm10_model = load_model("pm10.keras")
+pm10_model = load_model("1dcnn_pm10.keras")
 
 # PM25 Data
 pm25 = df[['pm25']]
@@ -76,7 +76,7 @@ scaled_PM25 = scalerPM25.fit_transform(valuesPM25)
 pollPM25 = np.array(df["pm25"])
 meanopPM25 = pollPM25.mean()
 stdopPM25 = pollPM25.std()
-pm25_model = load_model("pm25.keras")
+pm25_model = load_model("1dcnn_pm25.keras")
 
 # SO2 Data
 so2 = df[['so2']]
@@ -87,7 +87,7 @@ scaled_SO2 = scalerSO2.fit_transform(valuesSO2)
 pollSO2 = np.array(df["so2"])
 meanopSO2 = pollSO2.mean()
 stdopSO2 = pollSO2.std()
-so2_model = load_model("so2.keras")
+so2_model = load_model("1dcnn_so2.keras")
 
 # Temp Data
 temp = df[['temp']]
@@ -98,29 +98,31 @@ scaled_Temp = scalerTemp.fit_transform(valuesTemp)
 pollTemp = np.array(df["temp"])
 meanopTemp = pollTemp.mean()
 stdopTemp = pollTemp.std()
-temp_model = load_model("temp.keras")
+temp_model = load_model("1dcnn_temp.keras")
 
 # Forecast Next 168 Steps
 def forecast_next_steps(model, data, n_steps=168):
-    forecast = []
-    data = np.array(data).reshape((1, 1, len(data)))
-    # Reverse the array
-    data = data[::-1]
+    predicted_value = model.predict(data.reshape(1, 168, 1))[0]
+    predicted_value = predicted_value
+    # forecast = []
+    # data = np.array(data).reshape((1, 1, len(data)))
+    # # Reverse the array
+    # data = data[::-1]
 
-    for _ in range(n_steps):
-        # Make prediction
-        yhat = model.predict(data, verbose=0)
+    # for _ in range(n_steps):
+    #     # Make prediction
+    #     yhat = model.predict(data, verbose=0)
         
-        # Append the prediction to forecast
-        forecast.append(yhat[0, 0])
+    #     # Append the prediction to forecast
+    #     forecast.append(yhat[0, 0])
         
-        # Update data with the new predicted value
-        yhat = yhat.reshape((1, 1, 1))  # Reshape yhat to 3D
-        data = np.append(data[:, :, 1:], yhat, axis=2)
+    #     # Update data with the new predicted value
+    #     yhat = yhat.reshape((1, 1, 1))  # Reshape yhat to 3D
+    #     data = np.append(data[:, :, 1:], yhat, axis=2)
 
-    # Convert forecast back to original scale
-    forecast = np.array(forecast)
-    return forecast
+    # # Convert forecast back to original scale
+    # forecast = np.array(forecast)
+    return predicted_value
 
 # Fetch Pollution Data
 def fetch_pollution_data():
@@ -203,7 +205,7 @@ def index():
 def aqi():
     aqi = data[['aqi']]
     aqi_data = aqi[-168:]
-    # aqi_data = aqi_data.ravel()
+    aqi_data = scalerAQI.transform(aqi_data)
     forecast = forecast_next_steps(aqi_model,aqi_data)
     forecast = forecast * stdopAQI + meanopAQI
     return jsonify(forecast.tolist())
@@ -213,6 +215,7 @@ def aqi():
 def co():
     co = data[['co']]
     co_data = co[-168:]
+    co_data = scalerCO.transform(co_data)
     forecast = forecast_next_steps(co_model,co_data)
     forecast = forecast * stdopCO + meanopCO
     return jsonify(forecast.tolist())
@@ -222,6 +225,7 @@ def co():
 def no2():
     no2 = data[['no2']]
     no2_data = no2[-168:]
+    no2_data = scalerNO.transform(no2_data)
     forecast = forecast_next_steps(no_model,no2_data)
     forecast = forecast * stdopNO + meanopNO
     return jsonify(forecast.tolist())
@@ -231,6 +235,7 @@ def no2():
 def o3():
     o3 = data[['o3']]
     o3_data = o3[-168:]
+    o3_data = scalerO3.transform(o3_data)
     forecast = forecast_next_steps(o3_model,o3_data)
     forecast = forecast * stdopO3 + meanopO3
     return jsonify(forecast.tolist())
@@ -240,6 +245,7 @@ def o3():
 def pm10():
     pm10 = data[['pm10']]
     pm10_data = pm10[-168:]
+    pm10_data = scalerPM10.transform(pm10_data)
     forecast = forecast_next_steps(pm10_model,pm10_data)
     forecast = forecast * stdopPM10 + meanopPM10
     return jsonify(forecast.tolist())
@@ -249,6 +255,7 @@ def pm10():
 def pm25():
     pm25 = data[['pm10']]
     pm25_data = pm25[-168:]
+    pm25_data = scalerPM25.transform(pm25_data)
     forecast = forecast_next_steps(pm25_model,pm25_data)
     forecast = forecast * stdopPM25 + meanopPM25
     return jsonify(forecast.tolist())
@@ -258,6 +265,7 @@ def pm25():
 def so2():
     so2 = data[['so2']]
     so2_data = so2[-168:]
+    so2_data = scalerSO2.transform(so2_data)
     forecast = forecast_next_steps(so2_model,so2_data)
     forecast = forecast * stdopSO2 + meanopSO2
     return jsonify(forecast.tolist())
@@ -267,6 +275,7 @@ def so2():
 def temp():
     temp = dataTemp[['app_temp']]
     temp_data = temp[-168:]
+    temp_data = scalerTemp.transform(temp_data)
     forecast = forecast_next_steps(temp_model,temp_data)
     forecast = forecast * stdopTemp + meanopTemp
     return jsonify(forecast.tolist())
