@@ -9,21 +9,35 @@ import numpy as np
 from keras.models import load_model
 
 app = Flask(__name__)
-df = pd.read_csv("../data/data_imputed.csv")
-aqi = df[['aqi']]
-values = aqi.values
-values = values.astype('float32')
-scalerAQI = MinMaxScaler(feature_range=(0, 1))
-scaled_AQI = scalerAQI.fit_transform(values)
-pollAQI = np.array(df["aqi"])
 
+df = pd.read_csv("../data/data_imputed.csv")
+
+# AQI Data
+aqi = df[['aqi']]
+valuesAQI = aqi.values
+valuesAQI = valuesAQI.astype('float32')
+scalerAQI = MinMaxScaler(feature_range=(0, 1))
+scaled_AQI = scalerAQI.fit_transform(valuesAQI)
+pollAQI = np.array(df["aqi"])
 meanopAQI = pollAQI.mean()
 stdopAQI = pollAQI.std()
 aqi_model = load_model("aqi.keras")
-    
-def forecast_next_AQI(model, aqi_data, n_steps=168):
+
+# CO Data
+co = df[['aqi']]
+valuesCO = aqi.values
+valuesCO = valuesCO.astype('float32')
+scalerCO = MinMaxScaler(feature_range=(0, 1))
+scaled_CO = scalerAQI.fit_transform(valuesCO)
+pollCO = np.array(df["co"])
+meanopCO = pollAQI.mean()
+stdopCO = pollAQI.std()
+co_model = load_model("co.keras")
+
+# Forecast Next 168 Steps
+def forecast_next_steps(model, data, n_steps=168):
     forecast = []
-    data = np.array(aqi_data).reshape((1, 1, len(aqi_data)))
+    data = np.array(data).reshape((1, 1, len(data)))
 
     for _ in range(n_steps):
         # Make prediction
@@ -38,9 +52,10 @@ def forecast_next_AQI(model, aqi_data, n_steps=168):
 
     # Convert forecast back to original scale
     forecast = np.array(forecast)
-    forecast = forecast * stdopAQI + meanopAQI
     return forecast
-def fetch_weather_data():
+
+# Fetch Pollution Data
+def fetch_pollution_data():
     dateToday = date.today()
     datePrev = dateToday - timedelta(days=8)
     
@@ -72,7 +87,7 @@ def fetch_weather_data():
         print(f"Failed to fetch data. HTTP Status code: {response.status_code}")
         print(response.text)
 
-fetch_weather_data()
+fetch_pollution_data()
 @app.route('/')
 def index():
     # print()
@@ -83,14 +98,16 @@ def aqi():
     aqi = data[['aqi']]
     aqi_data = aqi[-168:]
     # aqi_data = aqi_data.ravel()
-    forecast = forecast_next_AQI(aqi_model,aqi_data)
+    forecast = forecast_next_steps(aqi_model,aqi_data)
+    forecast = forecast * stdopAQI + meanopAQI
     return jsonify(forecast.tolist())
 
 @app.route('/co', methods=['POST'])
 def aqi():
     co = data[['co']]
     co_data = co[-168:]
-    forecast = forecast_next_AQI(co_model,co_data)
+    forecast = forecast_next_steps(co_model,co_data)
+    forecast = forecast * stdopCO + meanopCO
     return jsonify(forecast.tolist())
 
 # Schedule the task to run every hour
