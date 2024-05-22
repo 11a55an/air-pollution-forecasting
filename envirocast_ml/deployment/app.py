@@ -24,15 +24,81 @@ stdopAQI = pollAQI.std()
 aqi_model = load_model("aqi.keras")
 
 # CO Data
-co = df[['aqi']]
-valuesCO = aqi.values
+co = df[['co']]
+valuesCO = co.values
 valuesCO = valuesCO.astype('float32')
 scalerCO = MinMaxScaler(feature_range=(0, 1))
-scaled_CO = scalerAQI.fit_transform(valuesCO)
+scaled_CO = scalerCO.fit_transform(valuesCO)
 pollCO = np.array(df["co"])
-meanopCO = pollAQI.mean()
-stdopCO = pollAQI.std()
+meanopCO = pollCO.mean()
+stdopCO = pollCO.std()
 co_model = load_model("co.keras")
+
+# NO2 Data
+no2 = df[['no2']]
+valuesNO = no2.values
+valuesNO = valuesNO.astype('float32')
+scalerNO = MinMaxScaler(feature_range=(0, 1))
+scaled_NO = scalerNO.fit_transform(valuesNO)
+pollNO = np.array(df["no2"])
+meanopNO = pollNO.mean()
+stdopNO = pollNO.std()
+no_model = load_model("no2.keras")
+
+# O3 Data
+o3 = df[['o3']]
+valuesO3 = o3.values
+valuesO3 = valuesO3.astype('float32')
+scalerO3 = MinMaxScaler(feature_range=(0, 1))
+scaled_O3 = scalerO3.fit_transform(valuesO3)
+pollO3 = np.array(df["o3"])
+meanopO3 = pollO3.mean()
+stdopO3 = pollO3.std()
+o3_model = load_model("o3.keras")
+
+# PM10 Data
+pm10 = df[['o3']]
+valuesPM10 = pm10.values
+valuesPM10 = valuesPM10.astype('float32')
+scalerPM10 = MinMaxScaler(feature_range=(0, 1))
+scaled_PM10 = scalerPM10.fit_transform(valuesPM10)
+pollPM10 = np.array(df["pm10"])
+meanopPM10 = pollPM10.mean()
+stdopPM10 = pollPM10.std()
+pm10_model = load_model("pm10.keras")
+
+# PM25 Data
+pm25 = df[['pm25']]
+valuesPM25 = pm25.values
+valuesPM25 = valuesPM25.astype('float32')
+scalerPM25 = MinMaxScaler(feature_range=(0, 1))
+scaled_PM25 = scalerPM25.fit_transform(valuesPM25)
+pollPM25 = np.array(df["pm25"])
+meanopPM25 = pollPM25.mean()
+stdopPM25 = pollPM25.std()
+pm25_model = load_model("pm25.keras")
+
+# SO2 Data
+so2 = df[['so2']]
+valuesSO2 = so2.values
+valuesSO2 = valuesSO2.astype('float32')
+scalerSO2 = MinMaxScaler(feature_range=(0, 1))
+scaled_SO2 = scalerSO2.fit_transform(valuesSO2)
+pollSO2 = np.array(df["so2"])
+meanopSO2 = pollSO2.mean()
+stdopSO2 = pollSO2.std()
+so2_model = load_model("so2.keras")
+
+# Temp Data
+temp = df[['temp']]
+valuesTemp = temp.values
+valuesTemp = valuesTemp.astype('float32')
+scalerTemp = MinMaxScaler(feature_range=(0, 1))
+scaled_Temp = scalerTemp.fit_transform(valuesTemp)
+pollTemp = np.array(df["temp"])
+meanopTemp = pollTemp.mean()
+stdopTemp = pollTemp.std()
+temp_model = load_model("temp.keras")
 
 # Forecast Next 168 Steps
 def forecast_next_steps(model, data, n_steps=168):
@@ -87,12 +153,50 @@ def fetch_pollution_data():
         print(f"Failed to fetch data. HTTP Status code: {response.status_code}")
         print(response.text)
 
+# Fetch Temperature Data
+def fetch_temp_data():
+    dateToday = date.today()
+    datePrev = dateToday - timedelta(days=8)
+    
+    print("Fetching data from", datePrev, "to", dateToday)
+    
+    # Define the API endpoint and parameters
+    api_url = "https://api.weatherbit.io/v2.0/history/hourly"
+    params = {
+        "city": "Gujrat",
+        "tz": "local",
+        "key": "63ca93ca7ef2414282446bce3531a72c",
+        'start_date': str(datePrev),
+        'end_date': str(dateToday)
+    }
+
+    # Make the request to the Weatherbit API
+    response = requests.get(api_url, params=params)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Parse the JSON response
+        global dataTemp
+        dataTemp = response.json()
+        print("Data fetched successfully:")
+        dataTemp = dataTemp['data']
+        dataTemp = pd.DataFrame(dataTemp)
+        print(dataTemp)
+    else:
+        print(f"Failed to fetch data. HTTP Status code: {response.status_code}")
+        print(response.text)
+
 fetch_pollution_data()
+fetch_temp_data()
+
+# Routes
+# Index
 @app.route('/')
 def index():
     # print()
     return "Hello World"
 
+# AQI
 @app.route('/aqi', methods=['POST'])
 def aqi():
     aqi = data[['aqi']]
@@ -102,12 +206,68 @@ def aqi():
     forecast = forecast * stdopAQI + meanopAQI
     return jsonify(forecast.tolist())
 
+# CO
 @app.route('/co', methods=['POST'])
-def aqi():
+def co():
     co = data[['co']]
     co_data = co[-168:]
     forecast = forecast_next_steps(co_model,co_data)
     forecast = forecast * stdopCO + meanopCO
+    return jsonify(forecast.tolist())
+
+# NO2
+@app.route('/no2', methods=['POST'])
+def no2():
+    no2 = data[['no2']]
+    no2_data = no2[-168:]
+    forecast = forecast_next_steps(no_model,no2_data)
+    forecast = forecast * stdopNO + meanopNO
+    return jsonify(forecast.tolist())
+
+# O3
+@app.route('/o3', methods=['POST'])
+def o3():
+    o3 = data[['o3']]
+    o3_data = o3[-168:]
+    forecast = forecast_next_steps(o3_model,o3_data)
+    forecast = forecast * stdopO3 + meanopO3
+    return jsonify(forecast.tolist())
+
+# PM10
+@app.route('/pm10', methods=['POST'])
+def pm10():
+    pm10 = data[['pm10']]
+    pm10_data = pm10[-168:]
+    forecast = forecast_next_steps(pm10_model,pm10_data)
+    forecast = forecast * stdopPM10 + meanopPM10
+    return jsonify(forecast.tolist())
+
+# PM2.5
+@app.route('/pm25', methods=['POST'])
+def pm25():
+    pm25 = data[['pm10']]
+    pm25_data = pm25[-168:]
+    forecast = forecast_next_steps(pm25_model,pm25_data)
+    forecast = forecast * stdopPM25 + meanopPM25
+    return jsonify(forecast.tolist())
+
+# SO2
+@app.route('/so2', methods=['POST'])
+def so2():
+    so2 = data[['so2']]
+    so2_data = so2[-168:]
+    forecast = forecast_next_steps(so2_model,so2_data)
+    forecast = forecast * stdopSO2 + meanopSO2
+    return jsonify(forecast.tolist())
+
+# Temp
+@app.route('/temp', methods=['POST'])
+def temp():
+    temp = dataTemp[['app_temp']]
+    temp_data = temp[-168:]
+    forecast = forecast_next_steps(temp_model,temp_data)
+    # forecast = forecast * stdopTemp + meanopTemp
+    forecast = scalerTemp.inverse_transform(forecast)
     return jsonify(forecast.tolist())
 
 # Schedule the task to run every hour
