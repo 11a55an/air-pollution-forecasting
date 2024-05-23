@@ -136,7 +136,7 @@ def fetch_pollution_data():
     params = {
         "city": "Gujrat",
         "tz": "local",
-        "key": "63ca93ca7ef2414282446bce3531a72c",
+        "key": "42439ec554bf49f7b59e4e0f08f45c9f",
         'start_date': str(datePrev),
         'end_date': str(dateToday)
     }
@@ -169,7 +169,7 @@ def fetch_temp_data():
     params = {
         "city": "Gujrat",
         "tz": "local",
-        "key": "63ca93ca7ef2414282446bce3531a72c",
+        "key": "42439ec554bf49f7b59e4e0f08f45c9f",
         'start_date': str(datePrev),
         'end_date': str(dateToday)
     }
@@ -280,13 +280,15 @@ def temp():
     forecast = forecast * stdopTemp + meanopTemp
     return jsonify(forecast.tolist())
 
+def sched():
+    fetch_pollution_data()
+    fetch_temp_data()
 # Schedule the task to run every hour
-# schedule.every().hour.do(fetch_weather_data)
+schedule.every().hour.do(sched)
 
 # # Keep the script running
-# while True:
-# schedule.run_pending()
-# time.sleep(1)
-
-if __name__ == '__main__':
-    app.run(debug=True)
+while True:
+    schedule.run_pending()
+    time.sleep(1)
+    if __name__ == '__main__':
+        app.run(debug=True)
