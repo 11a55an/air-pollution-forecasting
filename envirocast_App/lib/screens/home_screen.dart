@@ -6,7 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:envirocast/bloc/weather_bloc_bloc.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'air_condition_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,6 +18,47 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Future<Map<String, dynamic>> fetchAirData() async {
+    // Get today's date
+    DateTime startDate = DateTime.now();
+
+    // Get yesterday's date
+    DateTime endDate = startDate.add(Duration(days: 1));
+
+    // Format dates to 'YYYY-MM-DD'
+    String formattedEndDate = DateFormat('yyyy-MM-dd').format(endDate);
+    String formattedStartDate = DateFormat('yyyy-MM-dd').format(startDate);
+
+    String weatherUrl = 'https://api.weatherbit.io/v2.0/history/hourly?city=Gujrat&tz=local&start_date=$formattedStartDate&end_date=$formattedEndDate&key=42439ec554bf49f7b59e4e0f08f45c9f';
+
+    // Make the HTTP GET requests
+    final responseTemp = await http.get(Uri.parse(weatherUrl));
+
+    if (responseTemp.statusCode == 200) {
+      Map<String, dynamic> weatherData = jsonDecode(responseTemp.body);
+
+      // Get the last non-null temperature JSON object
+      List<dynamic> weatherDataList = weatherData['data'];
+      Map<String, dynamic>? tempData;
+      for (var item in weatherDataList.reversed) {
+        if (item['temp'] != null) {
+          tempData = item;
+          break;
+        }
+      }
+
+      if (tempData == null) {
+        throw Exception('No valid temperature data found');
+      }
+
+      // Return both airData and tempData
+      return {
+        'tempData': tempData,
+      };
+    } else {
+      throw Exception('Failed to load air or weather data');
+    }
+  }
   Widget getWeatherIcon(int code) {
     switch (code) {
       case >= 200 && < 210 || >= 212 && < 300:
@@ -81,7 +123,16 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.fromLTRB(40, 1.2 * kToolbarHeight, 40, 20),
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
-          child: Stack(
+          child: FutureBuilder<Map<String, dynamic>>(
+                future: fetchAirData(),
+                builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
+                Map<String, dynamic> tempData = snapshot.data!['tempData'];
+                return Stack(
             children: [
               Align(
                 alignment: const AlignmentDirectional(3, -0.3),
@@ -151,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             Center(
                               child: Text(
-                                '${state.weather.temperature!.celsius!.round()}°C',
+                                '${tempData['temp'].toStringAsFixed(0)}°C',
                                 style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 55,
@@ -356,7 +407,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               )
             ],
-          ),
+    );}}),
         ),
       ),
     );

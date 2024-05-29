@@ -8,6 +8,7 @@ import 'home_screen.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 
 class OutdoorScreen extends StatelessWidget {
   final Color colorUp;
@@ -17,13 +18,35 @@ class OutdoorScreen extends StatelessWidget {
     required this.colorUp,
     required this.colorDown,}) : super(key: key);
 
-  Future<SampleAirData> fetchAirData() async {
+  Future<Map<String, dynamic>> fetchAirData() async {
     final response = await http.get(Uri.parse('https://api.weatherbit.io/v2.0/history/airquality?city=Gujrat&tz=local&key=42439ec554bf49f7b59e4e0f08f45c9f'));
 
-    if (response.statusCode == 200) {
-      return SampleAirData.fromJson(jsonDecode(response.body));
+    // Get today's date
+    DateTime startDate = DateTime.now();
+
+    // Get yesterday's date
+    DateTime endDate = startDate.add(Duration(days: 1));
+
+    // Format dates to 'YYYY-MM-DD'
+    String formattedEndDate = DateFormat('yyyy-MM-dd').format(endDate);
+    String formattedStartDate = DateFormat('yyyy-MM-dd').format(startDate);
+
+    // Construct the URL with query parameters
+    String url = 'https://api.weatherbit.io/v2.0/history/hourly?city=Gujrat&tz=local&start_date=$formattedStartDate&end_date=$formattedEndDate&key=42439ec554bf49f7b59e4e0f08f45c9f';
+
+    // Make the HTTP GET request
+    final responseTemp = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200 && responseTemp.statusCode == 200) {
+      Map<String, dynamic> airData = jsonDecode(response.body);
+      Map<String, dynamic> weatherData = jsonDecode(responseTemp.body);
+
+      return {
+        'airData': SampleAirData.fromJson(airData),
+        'weatherData': SampleWeatherData.fromJson(weatherData),
+      };
     } else {
-      throw Exception('Failed to load air data');
+      throw Exception('Failed to load air or weather data');
     }
   }
 
@@ -41,7 +64,7 @@ class OutdoorScreen extends StatelessWidget {
         ),
       ),
       body:SafeArea(
-    child: FutureBuilder<SampleAirData>(
+    child: FutureBuilder<Map<String, dynamic>>(
     future: fetchAirData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -49,10 +72,11 @@ class OutdoorScreen extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            SampleAirData sampleAirData = snapshot.data!;
+            SampleAirData sampleAirData = snapshot.data!['airData'];
+            SampleWeatherData sampleWeatherData = snapshot.data!['weatherData'];
 
 
-           return Padding(
+            return Padding(
     padding: EdgeInsets.fromLTRB(40, 1.2 * kToolbarHeight, 40, 20),
     child: SizedBox(
     height: MediaQuery.of(context).size.height,
@@ -225,7 +249,7 @@ class OutdoorScreen extends StatelessWidget {
     ),
     SizedBox(height: 1),
     Text(
-    'temp',
+      '${sampleWeatherData.temp!}',
     style: TextStyle(
     color: Colors.white,
     fontSize: 20,
@@ -690,7 +714,6 @@ class OutdoorScreen extends StatelessWidget {
 }
 
 class SampleAirData {
-  // final double? temp;
   final dynamic aqi;
   final dynamic Co;
   final dynamic NO2;
@@ -698,17 +721,8 @@ class SampleAirData {
   final dynamic So2;
   final dynamic PM2;
   final dynamic PM10;
-  // final double? predTemp;
-  // final double? predAqi;
-  // final double? predCo;
-  // final double? predNO2;
-  // final double? predO3;
-  // final double? predSo2;
-  // final double? predPM2;
-  // final double? predPM10;
 
   SampleAirData({
-    // this.temp,
     this.aqi,
     this.Co,
     this.NO2,
@@ -716,19 +730,12 @@ class SampleAirData {
     this.So2,
     this.PM2,
     this.PM10,
-    // this.predTemp,
-    // this.predAqi,
-    // this.predCo,
-    // this.predNO2,
-    // this.predO3,
-    // this.predSo2,
-    // this.predPM2,
-    // this.predPM10,
   });
+  
+  
 
   factory SampleAirData.fromJson(Map<String, dynamic> json) {
     return SampleAirData(
-      // temp: json['temp'],
       aqi: json['data'][0]['aqi'],
       Co: json['data'][0]['co'],
       NO2: json['data'][0]['no2'],
@@ -736,14 +743,29 @@ class SampleAirData {
       So2: json['data'][0]['so2'],
       PM2: json['data'][0]['pm25'],
       PM10: json['data'][0]['pm10'],
-      // predTemp: json['predTemp'],
-      // predAqi: json['predAqi'],
-      // predCo: json['predCo'],
-      // predNO2: json['predNO2'],
-      // predO3: json['predO3'],
-      // predSo2: json['predSo2'],
-      // predPM2: json['predPM2'],
-      // predPM10: json['predPM10'],
+    );
+  }
+}
+
+class SampleWeatherData {
+  final dynamic temp;
+
+  SampleWeatherData({
+    this.temp
+  });
+
+  factory SampleWeatherData.fromJson(Map<String, dynamic> json) {
+    // Get the last non-null temperature value
+    List<dynamic> weatherDataList = json['data'];
+    double temp1 = 0;
+    for (var item in weatherDataList.reversed) {
+      if (item['temp'] != null) {
+        temp1 = item['temp'];
+        break;
+      }
+    }
+    return SampleWeatherData(
+      temp: temp1
     );
   }
 }
