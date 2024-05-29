@@ -7,8 +7,10 @@ import time
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 from keras.models import load_model
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 df = pd.read_csv("data_imputed_2.csv")
 
@@ -126,8 +128,9 @@ def forecast_next_steps(model, data, n_steps=168):
 
 # Fetch Pollution Data
 def fetch_pollution_data():
-    dateToday = date.today()
+    dateToday = date.today() + timedelta(days=1)
     datePrev = dateToday - timedelta(days=8)
+    print(dateToday, datePrev)
     
     print("Fetching data from", datePrev, "to", dateToday)
     
@@ -159,7 +162,7 @@ def fetch_pollution_data():
 
 # Fetch Temperature Data
 def fetch_temp_data():
-    dateToday = date.today()
+    dateToday = date.today()+ timedelta(days=1)
     datePrev = dateToday - timedelta(days=8)
     
     print("Fetching data from", datePrev, "to", dateToday)
@@ -185,6 +188,10 @@ def fetch_temp_data():
         print("Data fetched successfully:")
         dataTemp = dataTemp['data']
         dataTemp = pd.DataFrame(dataTemp)
+        dataTemp = dataTemp[['app_temp']]
+        dataTemp = dataTemp.dropna()
+        dataTemp = dataTemp[-168:]
+        # dataTemp = dataTemp.tail(168)
         print(dataTemp)
     else:
         print(f"Failed to fetch data. HTTP Status code: {response.status_code}")
@@ -204,81 +211,110 @@ def index():
 @app.route('/aqi', methods=['POST'])
 def aqi():
     aqi = data[['aqi']]
-    aqi_data = aqi[-168:]
+    aqi_data = aqi[::-1]
+    aqi_data = aqi_data[-168:]
+    print(aqi_data)
     aqi_data = scalerAQI.transform(aqi_data)
     forecast = forecast_next_steps(aqi_model,aqi_data)
     forecast = forecast * stdopAQI + meanopAQI
-    return jsonify(forecast.tolist())
+    return forecast.tolist()
 
 # CO
 @app.route('/co', methods=['POST'])
 def co():
     co = data[['co']]
-    co_data = co[-168:]
+    co_data = co[::-1]
+    co_data = co_data[-168:]
     co_data = scalerCO.transform(co_data)
     forecast = forecast_next_steps(co_model,co_data)
     forecast = forecast * stdopCO + meanopCO
-    return jsonify(forecast.tolist())
+    return forecast.tolist()
 
 # NO2
 @app.route('/no2', methods=['POST'])
 def no2():
     no2 = data[['no2']]
-    no2_data = no2[-168:]
+    no2_data = no2[::-1]
+    no2_data = no2_data[-168:]
     no2_data = scalerNO.transform(no2_data)
     forecast = forecast_next_steps(no_model,no2_data)
     forecast = forecast * stdopNO + meanopNO
-    return jsonify(forecast.tolist())
+    return forecast.tolist()
 
 # O3
 @app.route('/o3', methods=['POST'])
 def o3():
     o3 = data[['o3']]
-    o3_data = o3[-168:]
+    o3_data = o3[::-1]
+    o3_data = o3_data[-168:]
     o3_data = scalerO3.transform(o3_data)
     forecast = forecast_next_steps(o3_model,o3_data)
     forecast = forecast * stdopO3 + meanopO3
-    return jsonify(forecast.tolist())
+    return forecast.tolist()
 
 # PM10
 @app.route('/pm10', methods=['POST'])
 def pm10():
     pm10 = data[['pm10']]
-    pm10_data = pm10[-168:]
+    pm10_data = pm10[::-1]
+    pm10_data = pm10_data[-168:]
     pm10_data = scalerPM10.transform(pm10_data)
     forecast = forecast_next_steps(pm10_model,pm10_data)
     forecast = forecast * stdopPM10 + meanopPM10
-    return jsonify(forecast.tolist())
+    return forecast.tolist()
 
 # PM2.5
 @app.route('/pm25', methods=['POST'])
 def pm25():
     pm25 = data[['pm10']]
-    pm25_data = pm25[-168:]
+    pm25_data = pm25[::-1]
+    pm25_data = pm25_data[-168:]
     pm25_data = scalerPM25.transform(pm25_data)
     forecast = forecast_next_steps(pm25_model,pm25_data)
     forecast = forecast * stdopPM25 + meanopPM25
-    return jsonify(forecast.tolist())
+    return forecast.tolist()
 
 # SO2
 @app.route('/so2', methods=['POST'])
 def so2():
     so2 = data[['so2']]
-    so2_data = so2[-168:]
+    so2_data = so2[::-1]
+    so2_data = so2_data[-168:]
     so2_data = scalerSO2.transform(so2_data)
     forecast = forecast_next_steps(so2_model,so2_data)
     forecast = forecast * stdopSO2 + meanopSO2
-    return jsonify(forecast.tolist())
+    return forecast.tolist()
 
 # Temp
 @app.route('/temp', methods=['POST'])
 def temp():
-    temp = dataTemp[['app_temp']]
-    temp_data = temp[-168:]
-    temp_data = scalerTemp.transform(temp_data)
+    temp_data = scalerTemp.transform(dataTemp)
     forecast = forecast_next_steps(temp_model,temp_data)
     forecast = forecast * stdopTemp + meanopTemp
-    return jsonify(forecast.tolist())
+    return forecast.tolist()
+
+# Temp
+@app.route('/all', methods=['POST'])
+def all():
+    temp_forecast = temp()
+    aqi_forecast = aqi()
+    co_forecast = co()
+    no2_forecast = no2()
+    o3_forecast = o3()
+    so2_forecast = so2()
+    pm25_forecast = pm25()
+    pm10_forecast = pm10()
+    result = {
+        "temp": temp_forecast,
+        "aqi": aqi_forecast,
+        "co": co_forecast,
+        "no2": no2_forecast,
+        "o3": o3_forecast,
+        "so2": so2_forecast,
+        "pm25": pm25_forecast,
+        "pm10": pm10_forecast
+    }
+    return jsonify(result)
 
 def sched():
     fetch_pollution_data()

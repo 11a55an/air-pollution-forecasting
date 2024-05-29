@@ -4,7 +4,6 @@ import 'package:kdgaugeview/kdgaugeview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'forecasting_screen.dart';
-import 'home_screen.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
@@ -20,7 +19,8 @@ class OutdoorScreen extends StatelessWidget {
 
   Future<Map<String, dynamic>> fetchAirData() async {
     final response = await http.get(Uri.parse('https://api.weatherbit.io/v2.0/history/airquality?city=Gujrat&tz=local&key=42439ec554bf49f7b59e4e0f08f45c9f'));
-
+    final responsePred = await http.post(Uri.parse('http://ec2-16-16-98-137.eu-north-1.compute.amazonaws.com:8080/all'));
+    print(responsePred.body);
     // Get today's date
     DateTime startDate = DateTime.now();
 
@@ -37,13 +37,15 @@ class OutdoorScreen extends StatelessWidget {
     // Make the HTTP GET request
     final responseTemp = await http.get(Uri.parse(url));
 
-    if (response.statusCode == 200 && responseTemp.statusCode == 200) {
+    if (response.statusCode == 200 && responseTemp.statusCode == 200 && responsePred.statusCode == 200) {
       Map<String, dynamic> airData = jsonDecode(response.body);
+      Map<String, dynamic> predData = jsonDecode(responsePred.body);
       Map<String, dynamic> weatherData = jsonDecode(responseTemp.body);
 
       return {
         'airData': SampleAirData.fromJson(airData),
         'weatherData': SampleWeatherData.fromJson(weatherData),
+        'predData': SamplePredData.fromJson(predData),
       };
     } else {
       throw Exception('Failed to load air or weather data');
@@ -74,6 +76,7 @@ class OutdoorScreen extends StatelessWidget {
           } else {
             SampleAirData sampleAirData = snapshot.data!['airData'];
             SampleWeatherData sampleWeatherData = snapshot.data!['weatherData'];
+            SamplePredData samplePredData = snapshot.data!['predData'];
 
 
             return Padding(
@@ -257,7 +260,7 @@ class OutdoorScreen extends StatelessWidget {
     ),
     ),
     Text(
-    'Exp_1h:7',
+    'Exp_1h: ${samplePredData.temp[0]!.toStringAsFixed(0)}',
     style: TextStyle(
     color: Colors.white,
     fontSize: 20,
@@ -314,7 +317,7 @@ class OutdoorScreen extends StatelessWidget {
     ),
     ),
     Text(
-    'Exp_1h: 6',
+    'Exp_1h: ${samplePredData.aqi[0]!.toStringAsFixed(0)}',
     style: TextStyle(
     color: Colors.white,
     fontSize: 20,
@@ -383,7 +386,7 @@ class OutdoorScreen extends StatelessWidget {
     ),
     SizedBox(height: 1),
     Text(
-    'Exp_1h: 5',
+    'Exp_1h: ${samplePredData.Co[0]!.toStringAsFixed(0)}',
     style: TextStyle(
     color: Colors.white,
     fontSize: 20,
@@ -440,7 +443,7 @@ class OutdoorScreen extends StatelessWidget {
     ),
     ),
     Text(
-    'Exp_1h: 5',
+    'Exp_1h: ${samplePredData.NO2[0]!.toStringAsFixed(0)}',
     style: TextStyle(
     color: Colors.white,
     fontSize: 20,
@@ -507,7 +510,7 @@ class OutdoorScreen extends StatelessWidget {
     fontSize: 20),
     ),
     Text(
-    'Exp_1h: 4',
+    'Exp_1h: ${samplePredData.O3[0]!.toStringAsFixed(0)}',
     style: TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w300,
@@ -562,7 +565,7 @@ class OutdoorScreen extends StatelessWidget {
     fontSize: 20),
     ),
     Text(
-    'Exp_1h: 3',
+    'Exp_1h: ${samplePredData.So2[0]!.toStringAsFixed(0)}',
     style: TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w300,
@@ -628,7 +631,7 @@ class OutdoorScreen extends StatelessWidget {
     fontSize: 20),
     ),
     Text(
-    'Exp_1h: 2',
+    'Exp_1h: ${samplePredData.PM2[0]!.toStringAsFixed(0)}',
     style: TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w300,
@@ -683,7 +686,7 @@ class OutdoorScreen extends StatelessWidget {
     fontSize: 20),
     ),
     Text(
-    'Exp_1h: 1',
+    'Exp_1h: ${samplePredData.PM10[0]!.toStringAsFixed(0)}',
     style: TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w300,
@@ -766,6 +769,41 @@ class SampleWeatherData {
     }
     return SampleWeatherData(
       temp: temp1
+    );
+  }
+}
+
+class SamplePredData {
+  final dynamic temp;
+  final dynamic aqi;
+  final dynamic Co;
+  final dynamic NO2;
+  final dynamic O3;
+  final dynamic So2;
+  final dynamic PM2;
+  final dynamic PM10;
+
+  SamplePredData({
+    this.temp,
+    this.aqi,
+    this.Co,
+    this.NO2,
+    this.O3,
+    this.So2,
+    this.PM2,
+    this.PM10,
+  });
+
+  factory SamplePredData.fromJson(Map<String, dynamic> json) {
+    return SamplePredData(
+      temp: json['temp'],
+      aqi: json['aqi'],
+      Co: json['co'],
+      NO2: json['no2'],
+      O3: json['o3'],
+      So2: json['so2'],
+      PM2: json['pm25'],
+      PM10: json['pm10'],
     );
   }
 }
