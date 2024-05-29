@@ -10,7 +10,7 @@ from keras.models import load_model
 
 app = Flask(__name__)
 
-df = pd.read_csv("../data/data_imputed.csv")
+df = pd.read_csv("data_imputed_2.csv")
 
 # AQI Data
 aqi = df[['aqi']]
@@ -291,4 +291,4 @@ while True:
     schedule.run_pending()
     time.sleep(1)
     if __name__ == '__main__':
-        app.run(debug=True)
+        app.run(host="0.0.0.0", port=8080)
