@@ -136,7 +136,7 @@ class OutdoorScreen extends StatelessWidget {
     style: TextStyle(
     color: Colors.white,
     fontSize: 35,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w700,
     ),
     ),
     ),
@@ -149,18 +149,18 @@ class OutdoorScreen extends StatelessWidget {
     child: Center(
     child: KdGaugeView(
     minSpeed: 0,
-    maxSpeed: 200,
-    speed: 49,
+    maxSpeed: 500,
+    speed: sampleAirData.aqi,
     animate: true,
     duration: Duration(seconds: 5),
-    alertSpeedArray: [50, 100, 150, 200],
+    alertSpeedArray: [100, 200, 300, 400],
     alertColorArray: [
     Colors.green,
     Colors.yellow,
     Colors.orange,
     Colors.red
     ],
-    unitOfMeasurement: "ppm",
+    unitOfMeasurement: "AQI",
     gaugeWidth: 15,
     minMaxTextStyle: const TextStyle(
     color: Colors.white, fontSize: 20),
@@ -240,7 +240,7 @@ class OutdoorScreen extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
     Text(
-    'Temperature',
+    'Temp',
     style: TextStyle(
     color: Colors.white,
     fontSize: 20,
@@ -249,7 +249,7 @@ class OutdoorScreen extends StatelessWidget {
     ),
     SizedBox(height: 1),
     Text(
-      '${sampleWeatherData.temp!}',
+      '${sampleWeatherData.temp!.toStringAsFixed(0)}°C',
     style: TextStyle(
     color: Colors.white,
     fontSize: 20,
@@ -306,7 +306,7 @@ class OutdoorScreen extends StatelessWidget {
     ),
     SizedBox(height: 3),
     Text(
-    '${sampleAirData.aqi!}',
+    '${sampleAirData.aqi!.toStringAsFixed(0)}',
     style: TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,
@@ -374,7 +374,7 @@ class OutdoorScreen extends StatelessWidget {
     ),
     SizedBox(height: 8),
     Text(
-    '${sampleAirData.Co!}',
+    '${sampleAirData.Co!.toStringAsFixed(0)}',
     style: TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,
@@ -432,7 +432,7 @@ class OutdoorScreen extends StatelessWidget {
     ),
     SizedBox(height: 3),
     Text(
-    '${sampleAirData.NO2!}',
+    '${sampleAirData.NO2!.toStringAsFixed(0)}',
     style: TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,
@@ -500,7 +500,7 @@ class OutdoorScreen extends StatelessWidget {
     ),
     SizedBox(height: 3),
     Text(
-    '${sampleAirData.O3!}',
+    '${sampleAirData.O3!.toStringAsFixed(0)}',
     style: TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,
@@ -555,7 +555,7 @@ class OutdoorScreen extends StatelessWidget {
     ),
     SizedBox(height: 3),
     Text(
-    '${sampleAirData.So2!}',
+    '${sampleAirData.So2!.toStringAsFixed(0)}',
     style: TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1045067506323",
+    "firebase_url": "https://aqi-testing3-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "aqi-testing3",
+    "storage_bucket": "aqi-testing3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1045067506323:android:7ff28baa88de7b82b66366",
+        "android_client_info": {
+          "package_name": "com.example.envirocast"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAw_madbydqh9VE0gGStrWjjKInzsgLec0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
