@@ -1,7 +1,5 @@
 import 'dart:ui';
-import 'package:envirocast/screens/detail_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:kdgaugeview/kdgaugeview.dart';
 import 'package:sliding_switch/sliding_switch.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'home_screen.dart';
 import 'outdoor_screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 class AirConditionScreen extends StatefulWidget {
   final Color colorUp;
@@ -216,24 +213,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-    GestureDetector(
-    onTap: () {
-    // Navigate to detail screen
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-    builder: (context) =>
-    DetailScreen(
-    parameterName: 'Temp',
-    parameterValue: 2.0,
-    predictedValue: 0,
-    speedValue: 45,
-    colorUp: widget.colorUp,
-    colorDown: widget.colorDown,)));
-
-    // You can use Navigator.push or any other navigation method here
-    },
-    child: Row(
+    Row(
     children: [
     Icon(
     Icons.wb_sunny_outlined,
@@ -266,25 +246,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     ),
     ],
     ),
-    ),
-    GestureDetector(
-    onTap: () {
-    // Navigate to detail screen
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-    builder: (context) =>
-    DetailScreen(
-    parameterName: 'LPG',
-    parameterValue: 1.0,
-    predictedValue: 0,
-    speedValue: 55,
-    colorUp: widget.colorUp,
-    colorDown: widget.colorDown,)));
-
-    // You can use Navigator.push or any other navigation method here
-    },
-    child: Row(
+    Row(
     children: [
     Icon(
     CupertinoIcons.flame,
@@ -317,7 +279,6 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     ),
     ],
     ),
-    ),
     ],
     ),
 
@@ -331,27 +292,10 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-    GestureDetector(
-    onTap: () {
-    // Navigate to detail screen
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-    builder: (context) =>
-    DetailScreen(
-    parameterName: 'Dust',
-    parameterValue: 120,
-    predictedValue: 0,
-    speedValue: 120,
-    colorUp: widget.colorUp,
-    colorDown: widget.colorDown,)));
-
-    // You can use Navigator.push or any other navigation method here
-    },
-    child: Row(
+    Row(
     children: [
     Icon(
-    Icons.science,
+    Icons.cloud,
     color: Colors.white,
     size: 35,
     ),
@@ -381,25 +325,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     ),
     ],
     ),
-    ),
-    GestureDetector(
-    onTap: () {
-    // Navigate to detail screen
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-    builder: (context) =>
-    DetailScreen(
-    parameterName: 'NH2',
-    parameterValue: 180,
-    predictedValue: 0,
-    speedValue: 180,
-    colorUp: widget.colorUp,
-    colorDown: widget.colorDown,)));
-
-    // You can use Navigator.push or any other navigation method here
-    },
-    child: Row(
+    Row(
     children: [
     Icon(
     Icons.dehaze,
@@ -432,7 +358,6 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     ),
     ],
     ),
-    ),
     ],
     ),
 
@@ -447,24 +372,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
     // Display max temperature
-    GestureDetector(
-    onTap: () {
-    // Navigate to detail screen
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-    builder: (context) =>
-    DetailScreen(
-    parameterName: 'Smoke',
-    parameterValue: 45,
-    predictedValue: 0,
-    speedValue: 45,
-    colorUp: widget.colorUp,
-    colorDown: widget.colorDown,)));
-
-    // You can use Navigator.push or any other navigation method here
-    },
-    child: Row(
+    Row(
     children: [
     Icon(
     Icons.thermostat,
@@ -495,29 +403,11 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     ),
     ],
     ),
-    ),
     // Display min temperature
-    GestureDetector(
-    onTap: () {
-    // Navigate to detail screen
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-    builder: (context) =>
-    DetailScreen(
-    parameterName: 'CO2',
-    parameterValue: 66,
-    predictedValue: 0,
-    speedValue: 66,
-    colorUp: widget.colorUp,
-    colorDown: widget.colorDown,)));
-
-    // You can use Navigator.push or any other navigation method here
-    },
-    child: Row(
+    Row(
     children: [
     Icon(
-    Icons.cloud,
+    Icons.science,
     color: Colors.white,
     size: 35,
     ),
@@ -544,7 +434,6 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     ],
     ),
     ],
-    ),
     ),
     ],
     ),
