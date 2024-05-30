@@ -20,7 +20,6 @@ class OutdoorScreen extends StatelessWidget {
   Future<Map<String, dynamic>> fetchAirData() async {
     final response = await http.get(Uri.parse('https://api.weatherbit.io/v2.0/history/airquality?city=Gujrat&tz=local&key=42439ec554bf49f7b59e4e0f08f45c9f'));
     final responsePred = await http.post(Uri.parse('http://ec2-16-16-98-137.eu-north-1.compute.amazonaws.com:8080/all'));
-    print(responsePred.body);
     // Get today's date
     DateTime startDate = DateTime.now();
 
@@ -222,9 +221,10 @@ class OutdoorScreen extends StatelessWidget {
     context,
     MaterialPageRoute(
     builder: (context) => DetailScreen(
-    parameterName: 'Temperature',
-    parameterValue: 16,
-    predictedValue: 10,
+    parameterName: 'Temp',
+    parameterData: samplePredData.temp,
+    parameterValue: sampleWeatherData.temp,
+    predictedValue: samplePredData.temp[0],
     speedValue: 45,
     colorUp: colorUp,
     colorDown: colorDown,)));
@@ -280,8 +280,9 @@ class OutdoorScreen extends StatelessWidget {
     MaterialPageRoute(
     builder: (context) => DetailScreen(
     parameterName: 'AQI',
-    parameterValue: 1.0,
-    predictedValue: 20,
+    parameterData: samplePredData.aqi,
+    parameterValue: sampleAirData.aqi,
+    predictedValue: samplePredData.aqi[0],
     speedValue: 145,
     colorUp: colorUp,
     colorDown: colorDown,)));
@@ -348,8 +349,9 @@ class OutdoorScreen extends StatelessWidget {
     MaterialPageRoute(
     builder: (context) => DetailScreen(
     parameterName: 'CO',
-    parameterValue: 1.6,
-    predictedValue: 10,
+    parameterData: samplePredData.Co,
+    parameterValue: sampleAirData.Co,
+    predictedValue: samplePredData.Co[0],
     speedValue: 101,
     colorUp: colorUp,
     colorDown: colorDown,)));
@@ -406,8 +408,9 @@ class OutdoorScreen extends StatelessWidget {
     MaterialPageRoute(
     builder: (context) => DetailScreen(
     parameterName: 'NO2',
-    parameterValue: 2.1,
-    predictedValue: 30,
+    parameterData: samplePredData.NO2,
+    parameterValue: sampleAirData.NO2,
+    predictedValue: samplePredData.NO2[0],
     speedValue: 200,
     colorUp: colorUp,
     colorDown: colorDown,)));
@@ -475,8 +478,9 @@ class OutdoorScreen extends StatelessWidget {
     MaterialPageRoute(
     builder: (context) => DetailScreen(
     parameterName: 'O3',
-    parameterValue: 1.2,
-    predictedValue: 10,
+    parameterData: samplePredData.O3,
+    parameterValue: sampleAirData.O3,
+    predictedValue: samplePredData.O3[0],
     speedValue: 45,
     colorUp: colorUp,
     colorDown: colorDown,)));
@@ -530,8 +534,9 @@ class OutdoorScreen extends StatelessWidget {
     MaterialPageRoute(
     builder: (context) => DetailScreen(
     parameterName: 'SO2',
-    parameterValue: 2.5,
-    predictedValue: 20,
+    parameterData: samplePredData.So2,
+    parameterValue: sampleAirData.So2,
+    predictedValue: samplePredData.So2[0],
     speedValue: 120,
     colorUp: colorUp,
     colorDown: colorDown,)));
@@ -596,8 +601,9 @@ class OutdoorScreen extends StatelessWidget {
     MaterialPageRoute(
     builder: (context) => DetailScreen(
     parameterName: 'PM2',
-    parameterValue: 2.3,
-    predictedValue: 10,
+    parameterData: samplePredData.PM2,
+    parameterValue: sampleAirData.PM2,
+    predictedValue: samplePredData.PM2[0],
     speedValue: 65,
     colorUp: colorUp,
     colorDown: colorDown,)));
@@ -651,8 +657,9 @@ class OutdoorScreen extends StatelessWidget {
     MaterialPageRoute(
     builder: (context) => DetailScreen(
     parameterName: 'PM10',
-    parameterValue: 1.5,
-    predictedValue: 30,
+    parameterData: samplePredData.PM10,
+    parameterValue: sampleAirData.PM10,
+    predictedValue: samplePredData.PM10[0],
     speedValue: 75,
     colorUp: colorUp,
     colorDown: colorDown,)));

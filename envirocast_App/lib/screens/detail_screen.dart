@@ -1,15 +1,13 @@
 import 'dart:ui';
-import 'package:kdgaugeview/kdgaugeview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-
-import 'home_screen.dart';
+import 'package:kdgaugeview/kdgaugeview.dart';
+import 'package:intl/intl.dart'; // Import the intl package
 
 class DetailScreen extends StatelessWidget {
   final String parameterName;
+  final List<dynamic> parameterData;
   final double parameterValue;
   final double predictedValue;
   final double speedValue;
@@ -19,6 +17,7 @@ class DetailScreen extends StatelessWidget {
   const DetailScreen({
     Key? key,
     required this.parameterName,
+    required this.parameterData,
     required this.parameterValue,
     required this.predictedValue,
     required this.speedValue,
@@ -31,8 +30,8 @@ class DetailScreen extends StatelessWidget {
       return Colors.green; // Good
     } else if (speedValue < 100) {
       return Colors.yellow; // Moderate
-    }else if (speedValue < 150) {
-      return Colors.orange; // Moderate
+    } else if (speedValue < 150) {
+      return Colors.orange; // Unhealthy
     } else {
       return Colors.red; // Poor
     }
@@ -46,10 +45,11 @@ class DetailScreen extends StatelessWidget {
       return "Moderate";
     } else if (color == Colors.orange) {
       return "Unhealthy";
-    }else {
+    } else {
       return "Poor";
     }
   }
+
   String getConditionFace() {
     final color = getGaugeColor();
     if (color == Colors.green) {
@@ -58,8 +58,8 @@ class DetailScreen extends StatelessWidget {
       return 'assets/Moderate.json';
     } else if (color == Colors.orange) {
       return 'assets/Unhealthy.json';
-    }else {
-      return'assets/Poor.json';
+    } else {
+      return 'assets/Poor.json';
     }
   }
 
@@ -70,21 +70,28 @@ class DetailScreen extends StatelessWidget {
     } else if (color == Colors.yellow) {
       return Icons.sentiment_satisfied_alt_outlined; // Moderate
     } else if (color == Colors.orange) {
-      return Icons.sentiment_neutral_outlined; // Moderate
-    }else {
+      return Icons.sentiment_neutral_outlined; // Unhealthy
+    } else {
       return Icons.sentiment_very_dissatisfied_outlined; // Poor
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Ensure parameterData is cast to List<double>
+    final List<double> forecastValues = parameterData.map((e) => (e as num).toDouble()).toList();
+
+    final List<PollutantData> forecastData = List.generate(
+      168, // 7 days * 24 hours
+          (index) => PollutantData(
+        dateTime: DateTime.now().add(Duration(hours: index)),
+        value: forecastValues[index % forecastValues.length], // Use modulo to prevent out-of-range error
+      ),
+    );
 
     final gaugeColor = getGaugeColor();
     final conditionText = getConditionText();
-    final iconData = getIconData();
     final conditionFace = getConditionFace();
-
-
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -140,276 +147,127 @@ class DetailScreen extends StatelessWidget {
                   decoration: BoxDecoration(color: Colors.transparent),
                 ),
               ),
-              Container(
-                height: MediaQuery.of(context).size.height,
-                child: SingleChildScrollView(
-                  child: Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 8,
+              SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Center(
+                      child: Text(
+                        'Detail',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 35,
+                          fontWeight: FontWeight.w500,
                         ),
-                        Center(
-                          child: Text(
-                            'Detail',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 35,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
+                      ),
+                    ),
                     Transform.scale(
                       scale: 0.8, // Adjust the scale factor as needed
                       child: Lottie.asset(
-
-                        conditionFace,),
+                        conditionFace,
+                      ),
                     ),
-
-
-                        ///////////**********Attributes************//////////
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    ///////////**********Attributes************//////////
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '$parameterName',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 1),
-                                Text(
-                                  '$parameterValue',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),                                 // to print the Good Moderate... with color
-                                SizedBox(height: 1),
-                                Text(conditionText,
-                                  style: TextStyle(
-                                    color: gaugeColor,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 1),
-
-                                Icon(
-                                  iconData,
-                                  color: Colors.white,
-                                  size: 35,
-                                ),
-                                predictedValue != 0 ? Text(  // Condition
-                                  "Exp_1h: $predictedValue",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                  ),
-                                ) : SizedBox(),
-
-                              ],
-                            ),
-
-                            // KdGauge
-                            Container(
-                              width: 190,
-                              height: 150,
-                              child: KdGaugeView(
-                                minSpeed: 0,
-                                maxSpeed: 200,
-                                speed: speedValue,
-                                animate: true,
-                                duration: Duration(seconds: 5),
-                                alertSpeedArray: [0, 50, 100, 150],
-                                alertColorArray: [
-                                  Colors.green,
-                                  Colors.yellow,
-                                  Colors.orange,
-                                  Colors.red
-                                ],
-                                unitOfMeasurement: "ppm",
-                                gaugeWidth: 10,
-                                minMaxTextStyle: const TextStyle(
-                                    color: Colors.white, fontSize: 15),
-                                unitOfMeasurementTextStyle: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold),
-                                speedTextStyle: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold),
-                                divisionCircleColors: Colors.purpleAccent,
-                                innerCirclePadding: 20,
+                            Text(
+                              '$parameterName',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
+                            SizedBox(height: 1),
+                            Text(
+                              '$parameterValue',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            // to print the Good Moderate... with color
+                            SizedBox(height: 1),
+                            Text(
+                              conditionText,
+                              style: TextStyle(
+                                color: gaugeColor,
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 1),
                           ],
                         ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 14.0),
-                          child: Divider(
-                            color: Colors.grey,
+                        // KdGauge
+                        Container(
+                          width: 190,
+                          height: 150,
+                          child: KdGaugeView(
+                            minSpeed: 0,
+                            maxSpeed: 200,
+                            speed: speedValue,
+                            animate: true,
+                            duration: Duration(seconds: 5),
+                            alertSpeedArray: [0, 50, 100, 150],
+                            alertColorArray: [
+                              Colors.green,
+                              Colors.yellow,
+                              Colors.orange,
+                              Colors.red
+                            ],
+                            unitOfMeasurement: "ppm",
+                            gaugeWidth: 10,
+                            minMaxTextStyle: const TextStyle(
+                                color: Colors.white, fontSize: 15),
+                            unitOfMeasurementTextStyle: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                            speedTextStyle: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold),
+                            divisionCircleColors: Colors.purpleAccent,
+                            innerCirclePadding: 20,
                           ),
                         ),
-
-
-                        ///////////**********Good************//////////
-                        //SizedBox(width: 5),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Good: ',
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            Flexible( // Wrap the second Text widget with Flexible
-                              child: Text(
-                                'The air is fresh and free from toxins.',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                                maxLines: 5, // Show at most 2 lines
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.justify,
-
-                              ),
-                            ),
-                          ],
-                        ),
-                        ///////////**********Moderate************//////////
-                        SizedBox(height: 6),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Moderate: ',
-                              style: TextStyle(
-                                color: Colors.yellow,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Flexible(
-                              child: Text(
-                                'Acceptable air quality for healthy adults but mild threat to sensitive individuals.',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                                maxLines: 5, // Show at most 2 lines
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.justify,
-                              ),)
-                          ],
-                        ),
-
-                        ///////////**********Unhealthy************//////////
-
-                        SizedBox(height: 6),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Unhealthy: ',
-                              style: TextStyle(
-                                color: Colors.orange,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Flexible(
-                              child: Text(
-                                'This could be harmful for children and elderly ',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                                maxLines: 5, // Show at most 2 lines
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.justify,
-                              ),)
-                          ],
-                        ),
-
-                        ///////////**********Poor************//////////
-                        SizedBox(height: 6),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Poor: ',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Flexible(
-                              child: Text(
-                                'Beware! Your Life is in danger. Prolonged exposure can lead to premature death.',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                                maxLines: 5, // Show at most 2 lines
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.justify,
-                              ),)
-                          ],
-                        ),
-
-
-                        SizedBox(height: 6),
-                        SizedBox(height: 6),
-
-                        Center(
-                          child: Text(
-                            'Chart',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 35,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 30.0),
-                        ),
-                        Image.asset('assets/Chart.png'),
-                        SizedBox(height: 8), // Add some space between the image and the text
-                        Text(
-                          'Differences in January-April emissions',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-
-
                       ],
                     ),
-                  ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 14.0),
+                      child: Divider(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    SizedBox(height: 6),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(), // Prevent inner scrolling
+                      itemCount: forecastData.length,
+                      itemBuilder: (context, index) {
+                        final data = forecastData[index];
+                        final formattedDate = DateFormat('hh:mm a, dd/MM').format(data.dateTime); // Format date and time
+                        return Card(
+                          margin: EdgeInsets.all(8.0),
+                          child: ListTile(
+                            title: Text(formattedDate),
+                            subtitle: Text(
+                              'Pollutant Value: ${data.value.toStringAsFixed(2)}',
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -420,3 +278,9 @@ class DetailScreen extends StatelessWidget {
   }
 }
 
+class PollutantData {
+  final DateTime dateTime;
+  final double value;
+
+  PollutantData({required this.dateTime, required this.value});
+}
