@@ -99,18 +99,18 @@ class DetailScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle(
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarBrightness: Brightness.dark,
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(40, 1.2 * kToolbarHeight, 40, 20),
+        padding: const EdgeInsets.fromLTRB(40, 1.2 * kToolbarHeight, 40, 20),
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Stack(
             children: [
               Align(
-                alignment: AlignmentDirectional(3, -0.3),
+                alignment: const AlignmentDirectional(3, -0.3),
                 child: Container(
                   height: 300,
                   width: 300,
@@ -121,7 +121,7 @@ class DetailScreen extends StatelessWidget {
                 ),
               ),
               Align(
-                alignment: AlignmentDirectional(-3, -0.3),
+                alignment: const AlignmentDirectional(-3, -0.3),
                 child: Container(
                   height: 300,
                   width: 300,
@@ -132,7 +132,7 @@ class DetailScreen extends StatelessWidget {
                 ),
               ),
               Align(
-                alignment: AlignmentDirectional(0, -1.2),
+                alignment: const AlignmentDirectional(0, -1.2),
                 child: Container(
                   height: 300,
                   width: 600,
@@ -144,17 +144,17 @@ class DetailScreen extends StatelessWidget {
               BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 100.0, sigmaY: 100.0),
                 child: Container(
-                  decoration: BoxDecoration(color: Colors.transparent),
+                  decoration: const BoxDecoration(color: Colors.transparent),
                 ),
               ),
               SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 8,
                     ),
-                    Center(
+                    const Center(
                       child: Text(
                         'Detail',
                         style: TextStyle(
@@ -178,24 +178,24 @@ class DetailScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '$parameterName',
-                              style: TextStyle(
+                              parameterName,
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(height: 1),
+                            const SizedBox(height: 1),
                             Text(
                               '$parameterValue',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                             // to print the Good Moderate... with color
-                            SizedBox(height: 1),
+                            const SizedBox(height: 1),
                             Text(
                               conditionText,
                               style: TextStyle(
@@ -204,7 +204,7 @@ class DetailScreen extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(height: 1),
+                            const SizedBox(height: 1),
                           ],
                         ),
                         // KdGauge
@@ -216,9 +216,9 @@ class DetailScreen extends StatelessWidget {
                             maxSpeed: 200,
                             speed: speedValue,
                             animate: true,
-                            duration: Duration(seconds: 5),
-                            alertSpeedArray: [0, 50, 100, 150],
-                            alertColorArray: [
+                            duration: const Duration(seconds: 5),
+                            alertSpeedArray: const [0, 50, 100, 150],
+                            alertColorArray: const [
                               Colors.green,
                               Colors.yellow,
                               Colors.orange,
@@ -248,16 +248,16 @@ class DetailScreen extends StatelessWidget {
                         color: Colors.grey,
                       ),
                     ),
-                    SizedBox(height: 6),
+                    const SizedBox(height: 6),
                     ListView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(), // Prevent inner scrolling
+                      physics: const NeverScrollableScrollPhysics(), // Prevent inner scrolling
                       itemCount: forecastData.length,
                       itemBuilder: (context, index) {
                         final data = forecastData[index];
                         final formattedDate = DateFormat('hh:mm a, dd/MM').format(data.dateTime); // Format date and time
                         return Card(
-                          margin: EdgeInsets.all(8.0),
+                          margin: const EdgeInsets.all(8.0),
                           child: ListTile(
                             title: Text(formattedDate),
                             subtitle: Text(

@@ -1,5 +1,4 @@
 import 'package:envirocast/screens/home_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
-    Future.delayed(Duration(seconds: 10), () {
+    Future.delayed(const Duration(seconds: 10), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (_) => FutureBuilder(
             future: _determinePosition(),
@@ -63,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     return Scaffold(
       body: Container(
         width: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [Colors.blue, Colors.purple],
               begin: Alignment.topRight,
@@ -75,7 +74,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
           children: [
 
-            SizedBox(height: 60,),
+            const SizedBox(height: 60,),
 
             Text(
               'Envirocast',
@@ -90,7 +89,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             Lottie.asset(
               'assets/workspace.json',
             ),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
 
             Text(
               'Take Control Of Your Air, Breathe',

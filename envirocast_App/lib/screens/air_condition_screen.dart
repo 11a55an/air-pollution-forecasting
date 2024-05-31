@@ -30,23 +30,13 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
   }
   @override
   Widget build(BuildContext context) {
-
-    final sampleAirData = SampleAirData(
-      dust: 1.0,
-      lpg: 1.0,
-      naturalGas: 1.0,
-      NH2: 1.0,
-      smoke: 1.0,
-      co2: 1.0,
-    );
-
     return Scaffold(
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle(
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarBrightness: Brightness.dark,
         ),
       ),
@@ -56,7 +46,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
           if (snapshot.hasData) {
             final data = snapshot.data?.snapshot.value as Map?;
             if (data == null) {
-              return Text('No data');
+              return const Text('No data');
             }
             final dust = data['dust'];
             final humidity = data['humidity'];
@@ -65,7 +55,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
             final mq7 = data['mq7'];
             final temperature = data['temperature'];
     return Padding(
-    padding: EdgeInsets.fromLTRB(40, 1.2 * kToolbarHeight, 40, 20),
+    padding: const EdgeInsets.fromLTRB(40, 1.2 * kToolbarHeight, 40, 20),
     child: SizedBox(
     height: MediaQuery
         .of(context)
@@ -74,7 +64,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     child: Stack(
     children: [
     Align(
-    alignment: AlignmentDirectional(3, -0.3),
+    alignment: const AlignmentDirectional(3, -0.3),
     child: Container(
     height: 300,
     width: 300,
@@ -85,7 +75,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     ),
     ),
     Align(
-    alignment: AlignmentDirectional(-3, -0.3),
+    alignment: const AlignmentDirectional(-3, -0.3),
     child: Container(
     height: 300,
     width: 300,
@@ -96,7 +86,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     ),
     ),
     Align(
-    alignment: AlignmentDirectional(0, -1.2),
+    alignment: const AlignmentDirectional(0, -1.2),
     child: Container(
     height: 300,
     width: 600,
@@ -108,7 +98,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     BackdropFilter(
     filter: ImageFilter.blur(sigmaX: 100.0, sigmaY: 100.0),
     child: Container(
-    decoration: BoxDecoration(color: Colors.transparent),
+    decoration: const BoxDecoration(color: Colors.transparent),
     ),
     ),
     SingleChildScrollView(
@@ -121,11 +111,11 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     child: Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-    SizedBox(
+    const SizedBox(
     height: 8,
     ),
 
-    Center(
+    const Center(
     child: Text(
     'Indoor Air Data',
     style: TextStyle(
@@ -147,9 +137,9 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     maxSpeed: 200,
     speed: 105,
     animate: true,
-    duration: Duration(seconds: 5),
-    alertSpeedArray: [50, 100, 150, 200],
-    alertColorArray: [
+    duration: const Duration(seconds: 5),
+    alertSpeedArray: const[50, 100, 150, 200],
+    alertColorArray: const [
     Colors.green,
     Colors.yellow,
     Colors.orange,
@@ -175,7 +165,6 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     Center(
     child: ElevatedButton(
     onPressed: () {
-    print('Outdoor');
     Navigator.push(
     context,
     MaterialPageRoute(
@@ -185,17 +174,17 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     );
     },
     style: ElevatedButton.styleFrom(
-    backgroundColor: Color.fromARGB(
+    backgroundColor: const Color.fromARGB(
     43, 204, 203, 203),
-    minimumSize: Size(150, 50), // Button size
-    padding: EdgeInsets.symmetric(
+    minimumSize: const Size(150, 50), // Button size
+    padding: const EdgeInsets.symmetric(
     horizontal: 16), // Button padding
     shape: RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(
     30), // Button border radius
     ),
     ),
-    child: Text(
+    child: const Text(
     'Outdoor',
     style: TextStyle(
     color: Colors.white,
@@ -215,17 +204,17 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     children: [
     Row(
     children: [
-    Icon(
+    const Icon(
     Icons.wb_sunny_outlined,
     color: Colors.white,
     size: 35,
     ),
-    SizedBox(width: 5),
+    const SizedBox(width: 5),
     Column(
     crossAxisAlignment: CrossAxisAlignment
         .start,
     children: [
-    Text(
+    const Text(
     'Temp',
     style: TextStyle(
     color: Colors.white,
@@ -233,10 +222,10 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     fontWeight: FontWeight.w300,
     ),
     ),
-    SizedBox(height: 1),
+    const SizedBox(height: 1),
     Text(
     '${temperature!}',
-    style: TextStyle(
+    style: const TextStyle(
     color: Colors.white,
     fontSize: 20,
     fontWeight: FontWeight.w700,
@@ -248,17 +237,17 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     ),
     Row(
     children: [
-    Icon(
+    const Icon(
     CupertinoIcons.flame,
     color: Colors.white,
     size: 35,
     ),
-    SizedBox(width: 8),
+    const SizedBox(width: 8),
     Column(
     crossAxisAlignment: CrossAxisAlignment
         .start,
     children: [
-    Text(
+    const Text(
     'LPG',
     style: TextStyle(
     color: Colors.white,
@@ -266,10 +255,10 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     fontSize: 20,
     ),
     ),
-    SizedBox(height: 3),
+    const SizedBox(height: 3),
     Text(
     '${mq5!}',
-    style: TextStyle(
+    style: const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,
     fontSize: 20,
@@ -294,17 +283,17 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     children: [
     Row(
     children: [
-    Icon(
+    const Icon(
     Icons.cloud,
     color: Colors.white,
     size: 35,
     ),
-    SizedBox(width: 5),
+    const SizedBox(width: 5),
     Column(
     crossAxisAlignment: CrossAxisAlignment
         .start,
     children: [
-    Text(
+    const Text(
     'Natural Gas',
     style: TextStyle(
     color: Colors.white,
@@ -312,10 +301,10 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     fontSize: 20,
     ),
     ),
-    SizedBox(height: 8),
+    const SizedBox(height: 8),
     Text(
     '${mq135!}',
-    style: TextStyle(
+    style:const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,
     fontSize: 20,
@@ -327,17 +316,17 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     ),
     Row(
     children: [
-    Icon(
+    const Icon(
     Icons.dehaze,
     color: Colors.white,
     size: 35,
     ),
-    SizedBox(width: 8),
+    const SizedBox(width: 8),
     Column(
     crossAxisAlignment: CrossAxisAlignment
         .start,
     children: [
-    Text(
+    const Text(
     'Dust',
     style: TextStyle(
     color: Colors.white,
@@ -345,10 +334,10 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     fontSize: 20,
     ),
     ),
-    SizedBox(height: 3),
+    const SizedBox(height: 3),
     Text(
     '${dust!}',
-    style: TextStyle(
+    style: const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,
     fontSize: 20,
@@ -374,27 +363,27 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     // Display max temperature
     Row(
     children: [
-    Icon(
+    const Icon(
     Icons.thermostat,
     color: Colors.white,
     size: 35,
     ),
-    SizedBox(width: 5),
+    const SizedBox(width: 5),
     Column(
     crossAxisAlignment: CrossAxisAlignment
         .start,
     children: [
-    Text(
+    const Text(
     'Humidity',
     style: TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w300,
     fontSize: 20),
     ),
-    SizedBox(height: 3),
+    const SizedBox(height: 3),
     Text(
     '${humidity!}',
-    style: TextStyle(
+    style: const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,
     fontSize: 20),
@@ -406,27 +395,27 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     // Display min temperature
     Row(
     children: [
-    Icon(
+    const Icon(
     Icons.science,
     color: Colors.white,
     size: 35,
     ),
-    SizedBox(width: 5),
+    const SizedBox(width: 5),
     Column(
     crossAxisAlignment: CrossAxisAlignment
         .start,
     children: [
-    Text(
+    const Text(
     'CO',
     style: TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w300,
     fontSize: 20),
     ),
-    SizedBox(height: 3),
+    const SizedBox(height: 3),
     Text(
     '${mq7!}',
-    style: TextStyle(
+    style: const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,
     fontSize: 20),
@@ -438,7 +427,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     ],
     ),
 
-    SizedBox(height: 30),
+    const SizedBox(height: 30),
     // Sliding switch for weather and air condition
     Align(
     alignment: FractionalOffset.bottomCenter,
@@ -447,7 +436,6 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     value: true,
     width: 250,
     onChanged: (bool value) {
-    print(value);
     },
     height: 35,
     animationDuration:
@@ -456,7 +444,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     Navigator.pop(
     context,
     MaterialPageRoute(
-    builder: (context) => HomeScreen()));
+    builder: (context) => const HomeScreen()));
     },
     onDoubleTap: () {},
     onSwipe: () {},
@@ -464,8 +452,8 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     textOn: "Air Condition",
     colorOn: const Color(0xffdc6c73),
     colorOff: const Color(0xff6682c0),
-    background: Color.fromARGB(43, 204, 203, 203),
-    buttonColor: Color.fromARGB(42, 247, 245, 247),
+    background: const Color.fromARGB(43, 204, 203, 203),
+    buttonColor: const Color.fromARGB(42, 247, 245, 247),
     inactiveColor: const Color(0xff636f7b),
     ),
     ),
@@ -480,10 +468,9 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     );
           }
           if (snapshot.hasError) {
-            print(snapshot.error.toString());
             return Text(snapshot.error.toString());
           }
-          return Text('....');
+          return const Text('....');
         },
       )
     );}}
@@ -492,7 +479,7 @@ class SampleAirData {
   final double? dust;
   final double? lpg;
   final double? naturalGas;
-  final double? NH2;
+  final double? nh2;
   final double? smoke;
   final double? co2;
   /*final String parameterName;
@@ -504,7 +491,7 @@ class SampleAirData {
     this.dust,
     this.lpg,
     this.naturalGas,
-    this.NH2,
+    this.nh2,
     this.smoke,
     this.co2,
     /* required this.parameterName,

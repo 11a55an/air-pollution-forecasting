@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
     DateTime startDate = DateTime.now();
 
     // Get yesterday's date
-    DateTime endDate = startDate.add(Duration(days: 1));
+    DateTime endDate = startDate.add(const Duration(days: 1));
 
     // Format dates to 'YYYY-MM-DD'
     String formattedEndDate = DateFormat('yyyy-MM-dd').format(endDate);
@@ -127,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 future: fetchAirData(),
                 builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
                 } else {
@@ -191,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(height: 8),
                             Text(
                               greeting,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold),
@@ -360,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ],
                             ),
                             //SizedBox(height: 30),
-                            SizedBox(height: 40),
+                            const SizedBox(height: 40),
                             Expanded(
                               child: Align(
                                 alignment: FractionalOffset.bottomCenter,
@@ -389,9 +389,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     colorOn: const Color(0xffdc6c73),
                                     colorOff: const Color(0xff6682c0),
                                     background:
-                                        Color.fromARGB(43, 204, 203, 203),
+                                        const Color.fromARGB(43, 204, 203, 203),
                                     buttonColor:
-                                        Color.fromARGB(42, 247, 245, 247),
+                                        const Color.fromARGB(42, 247, 245, 247),
                                     inactiveColor: const Color(0xff636f7b),
                                   ),
                                 ),

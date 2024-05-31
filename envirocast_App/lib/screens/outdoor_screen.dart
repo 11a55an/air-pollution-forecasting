@@ -24,7 +24,7 @@ class OutdoorScreen extends StatelessWidget {
     DateTime startDate = DateTime.now();
 
     // Get yesterday's date
-    DateTime endDate = startDate.add(Duration(days: 1));
+    DateTime endDate = startDate.add(const Duration(days: 1));
 
     // Format dates to 'YYYY-MM-DD'
     String formattedEndDate = DateFormat('yyyy-MM-dd').format(endDate);
@@ -60,7 +60,7 @@ class OutdoorScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle(
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarBrightness: Brightness.dark,
         ),
       ),
@@ -69,7 +69,7 @@ class OutdoorScreen extends StatelessWidget {
     future: fetchAirData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
@@ -79,13 +79,13 @@ class OutdoorScreen extends StatelessWidget {
 
 
             return Padding(
-    padding: EdgeInsets.fromLTRB(40, 1.2 * kToolbarHeight, 40, 20),
+    padding: const EdgeInsets.fromLTRB(40, 1.2 * kToolbarHeight, 40, 20),
     child: SizedBox(
     height: MediaQuery.of(context).size.height,
     child: Stack(
     children: [
     Align(
-    alignment: AlignmentDirectional(3, -0.3),
+    alignment: const AlignmentDirectional(3, -0.3),
     child: Container(
     height: 300,
     width: 300,
@@ -96,7 +96,7 @@ class OutdoorScreen extends StatelessWidget {
     ),
     ),
     Align(
-    alignment: AlignmentDirectional(-3, -0.3),
+    alignment: const AlignmentDirectional(-3, -0.3),
     child: Container(
     height: 300,
     width: 300,
@@ -107,7 +107,7 @@ class OutdoorScreen extends StatelessWidget {
     ),
     ),
     Align(
-    alignment: AlignmentDirectional(0, -1.2),
+    alignment: const AlignmentDirectional(0, -1.2),
     child: Container(
     height: 300,
     width: 600,
@@ -119,7 +119,7 @@ class OutdoorScreen extends StatelessWidget {
     BackdropFilter(
     filter: ImageFilter.blur(sigmaX: 100.0, sigmaY: 100.0),
     child: Container(
-    decoration: BoxDecoration(color: Colors.transparent),
+    decoration: const BoxDecoration(color: Colors.transparent),
     ),
     ),
     SingleChildScrollView(
@@ -129,10 +129,10 @@ class OutdoorScreen extends StatelessWidget {
     child: Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-    SizedBox(
+    const SizedBox(
     height: 8,
     ),
-    Center(
+    const Center(
     child: Text(
     'Outdoor Air Data',
     style: TextStyle(
@@ -154,9 +154,9 @@ class OutdoorScreen extends StatelessWidget {
     maxSpeed: 500,
     speed: sampleAirData.aqi,
     animate: true,
-    duration: Duration(seconds: 5),
-    alertSpeedArray: [100, 200, 300, 400],
-    alertColorArray: [
+    duration: const Duration(seconds: 5),
+    alertSpeedArray: const [100, 200, 300, 400],
+    alertColorArray: const [
     Colors.green,
     Colors.yellow,
     Colors.orange,
@@ -189,16 +189,16 @@ class OutdoorScreen extends StatelessWidget {
     );
     },
     style: ElevatedButton.styleFrom(
-    backgroundColor: Color.fromARGB(43, 204, 203, 203),
-    minimumSize: Size(150, 50), // Button size
-    padding: EdgeInsets.symmetric(
+    backgroundColor: const Color.fromARGB(43, 204, 203, 203),
+    minimumSize: const Size(150, 50), // Button size
+    padding: const EdgeInsets.symmetric(
     horizontal: 16), // Button padding
     shape: RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(
     30), // Button border radius
     ),
     ),
-    child: Text(
+    child: const Text(
     'Forecast',
     style: TextStyle(
     color: Colors.white,
@@ -233,16 +233,16 @@ class OutdoorScreen extends StatelessWidget {
     },
     child: Row(
     children: [
-    Icon(
+    const Icon(
     CupertinoIcons.thermometer,
     color: Colors.white,
     size: 35,
     ),
-    SizedBox(width: 5),
+    const SizedBox(width: 5),
     Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-    Text(
+    const Text(
     'Temp',
     style: TextStyle(
     color: Colors.white,
@@ -250,10 +250,10 @@ class OutdoorScreen extends StatelessWidget {
     fontWeight: FontWeight.w300,
     ),
     ),
-    SizedBox(height: 1),
+    const SizedBox(height: 1),
     Text(
       '${sampleWeatherData.temp!.toStringAsFixed(0)}°C',
-    style: TextStyle(
+    style: const TextStyle(
     color: Colors.white,
     fontSize: 20,
     fontWeight: FontWeight.w700,
@@ -261,7 +261,7 @@ class OutdoorScreen extends StatelessWidget {
     ),
     Text(
     'Exp_1h: ${samplePredData.temp[0]!.toStringAsFixed(0)}',
-    style: TextStyle(
+    style: const TextStyle(
     color: Colors.white,
     fontSize: 20,
     fontWeight: FontWeight.w300,
@@ -291,16 +291,16 @@ class OutdoorScreen extends StatelessWidget {
     },
     child: Row(
     children: [
-    Icon(
+    const Icon(
     CupertinoIcons.wind,
     color: Colors.white,
     size: 35,
     ),
-    SizedBox(width: 8),
+    const SizedBox(width: 8),
     Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-    Text(
+    const Text(
     'AQI',
     style: TextStyle(
     color: Colors.white,
@@ -308,10 +308,10 @@ class OutdoorScreen extends StatelessWidget {
     fontSize: 20,
     ),
     ),
-    SizedBox(height: 3),
+    const SizedBox(height: 3),
     Text(
     '${sampleAirData.aqi!.toStringAsFixed(0)}',
-    style: TextStyle(
+    style: const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,
     fontSize: 20,
@@ -319,7 +319,7 @@ class OutdoorScreen extends StatelessWidget {
     ),
     Text(
     'Exp_1h: ${samplePredData.aqi[0]!.toStringAsFixed(0)}',
-    style: TextStyle(
+    style: const TextStyle(
     color: Colors.white,
     fontSize: 20,
     fontWeight: FontWeight.w300,
@@ -349,9 +349,9 @@ class OutdoorScreen extends StatelessWidget {
     MaterialPageRoute(
     builder: (context) => DetailScreen(
     parameterName: 'CO',
-    parameterData: samplePredData.Co,
-    parameterValue: sampleAirData.Co,
-    predictedValue: samplePredData.Co[0],
+    parameterData: samplePredData.co,
+    parameterValue: sampleAirData.co,
+    predictedValue: samplePredData.co[0],
     speedValue: 101,
     colorUp: colorUp,
     colorDown: colorDown,)));
@@ -360,16 +360,16 @@ class OutdoorScreen extends StatelessWidget {
     },
     child: Row(
     children: [
-    Icon(
+    const Icon(
     Icons.science,
     color: Colors.white,
     size: 35,
     ),
-    SizedBox(width: 5),
+    const SizedBox(width: 5),
     Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-    Text(
+    const Text(
     'CO',
     style: TextStyle(
     color: Colors.white,
@@ -377,19 +377,19 @@ class OutdoorScreen extends StatelessWidget {
     fontSize: 20,
     ),
     ),
-    SizedBox(height: 8),
+    const SizedBox(height: 8),
     Text(
-    '${sampleAirData.Co!.toStringAsFixed(0)}',
-    style: TextStyle(
+    '${sampleAirData.co!.toStringAsFixed(0)}',
+    style: const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,
     fontSize: 20,
     ),
     ),
-    SizedBox(height: 1),
+    const SizedBox(height: 1),
     Text(
-    'Exp_1h: ${samplePredData.Co[0]!.toStringAsFixed(0)}',
-    style: TextStyle(
+    'Exp_1h: ${samplePredData.co[0]!.toStringAsFixed(0)}',
+    style: const TextStyle(
     color: Colors.white,
     fontSize: 20,
     fontWeight: FontWeight.w300,
@@ -408,9 +408,9 @@ class OutdoorScreen extends StatelessWidget {
     MaterialPageRoute(
     builder: (context) => DetailScreen(
     parameterName: 'NO2',
-    parameterData: samplePredData.NO2,
-    parameterValue: sampleAirData.NO2,
-    predictedValue: samplePredData.NO2[0],
+    parameterData: samplePredData.no2,
+    parameterValue: sampleAirData.no2,
+    predictedValue: samplePredData.no2[0],
     speedValue: 200,
     colorUp: colorUp,
     colorDown: colorDown,)));
@@ -419,16 +419,16 @@ class OutdoorScreen extends StatelessWidget {
     },
     child: Row(
     children: [
-    Icon(
+    const Icon(
     CupertinoIcons.gauge,
     color: Colors.white,
     size: 35,
     ),
-    SizedBox(width: 8),
+    const SizedBox(width: 8),
     Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-    Text(
+    const Text(
     'NO2',
     style: TextStyle(
     color: Colors.white,
@@ -436,18 +436,18 @@ class OutdoorScreen extends StatelessWidget {
     fontSize: 20,
     ),
     ),
-    SizedBox(height: 3),
+    const SizedBox(height: 3),
     Text(
-    '${sampleAirData.NO2!.toStringAsFixed(0)}',
-    style: TextStyle(
+    '${sampleAirData.no2!.toStringAsFixed(0)}',
+    style: const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,
     fontSize: 20,
     ),
     ),
     Text(
-    'Exp_1h: ${samplePredData.NO2[0]!.toStringAsFixed(0)}',
-    style: TextStyle(
+    'Exp_1h: ${samplePredData.no2[0]!.toStringAsFixed(0)}',
+    style: const TextStyle(
     color: Colors.white,
     fontSize: 20,
     fontWeight: FontWeight.w300,
@@ -478,9 +478,9 @@ class OutdoorScreen extends StatelessWidget {
     MaterialPageRoute(
     builder: (context) => DetailScreen(
     parameterName: 'O3',
-    parameterData: samplePredData.O3,
-    parameterValue: sampleAirData.O3,
-    predictedValue: samplePredData.O3[0],
+    parameterData: samplePredData.o3,
+    parameterValue: sampleAirData.o3,
+    predictedValue: samplePredData.o3[0],
     speedValue: 45,
     colorUp: colorUp,
     colorDown: colorDown,)));
@@ -489,33 +489,33 @@ class OutdoorScreen extends StatelessWidget {
     },
     child: Row(
     children: [
-    Icon(
+    const Icon(
     CupertinoIcons.cloud,
     color: Colors.white,
     size: 35,
     ),
-    SizedBox(width: 5),
+    const SizedBox(width: 5),
     Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-    Text(
+    const Text(
     'O3',
     style: TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w300,
     fontSize: 20),
     ),
-    SizedBox(height: 3),
+    const SizedBox(height: 3),
     Text(
-    '${sampleAirData.O3!.toStringAsFixed(0)}',
-    style: TextStyle(
+    '${sampleAirData.o3!.toStringAsFixed(0)}',
+    style:const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,
     fontSize: 20),
     ),
     Text(
-    'Exp_1h: ${samplePredData.O3[0]!.toStringAsFixed(0)}',
-    style: TextStyle(
+    'Exp_1h: ${samplePredData.o3[0]!.toStringAsFixed(0)}',
+    style: const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w300,
     fontSize: 20),
@@ -534,9 +534,9 @@ class OutdoorScreen extends StatelessWidget {
     MaterialPageRoute(
     builder: (context) => DetailScreen(
     parameterName: 'SO2',
-    parameterData: samplePredData.So2,
-    parameterValue: sampleAirData.So2,
-    predictedValue: samplePredData.So2[0],
+    parameterData: samplePredData.so2,
+    parameterValue: sampleAirData.so2,
+    predictedValue: samplePredData.so2[0],
     speedValue: 120,
     colorUp: colorUp,
     colorDown: colorDown,)));
@@ -545,33 +545,33 @@ class OutdoorScreen extends StatelessWidget {
     },
     child: Row(
     children: [
-    Icon(
+    const Icon(
     Icons.fire_extinguisher,
     color: Colors.white,
     size: 35,
     ),
-    SizedBox(width: 5),
+    const SizedBox(width: 5),
     Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-    Text(
+    const Text(
     'SO2',
     style: TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w300,
     fontSize: 20),
     ),
-    SizedBox(height: 3),
+    const SizedBox(height: 3),
     Text(
-    '${sampleAirData.So2!.toStringAsFixed(0)}',
-    style: TextStyle(
+    '${sampleAirData.so2!.toStringAsFixed(0)}',
+    style: const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,
     fontSize: 20),
     ),
     Text(
-    'Exp_1h: ${samplePredData.So2[0]!.toStringAsFixed(0)}',
-    style: TextStyle(
+    'Exp_1h: ${samplePredData.so2[0]!.toStringAsFixed(0)}',
+    style: const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w300,
     fontSize: 20),
@@ -601,9 +601,9 @@ class OutdoorScreen extends StatelessWidget {
     MaterialPageRoute(
     builder: (context) => DetailScreen(
     parameterName: 'PM2',
-    parameterData: samplePredData.PM2,
-    parameterValue: sampleAirData.PM2,
-    predictedValue: samplePredData.PM2[0],
+    parameterData: samplePredData.pm25,
+    parameterValue: sampleAirData.pm25,
+    predictedValue: samplePredData.pm25[0],
     speedValue: 65,
     colorUp: colorUp,
     colorDown: colorDown,)));
@@ -612,33 +612,33 @@ class OutdoorScreen extends StatelessWidget {
     },
     child: Row(
     children: [
-    Icon(
+    const Icon(
     CupertinoIcons.flame_fill,
     color: Colors.white,
     size: 35,
     ),
-    SizedBox(width: 5),
+    const SizedBox(width: 5),
     Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-    Text(
+    const Text(
     'PM2',
     style: TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w300,
     fontSize: 20),
     ),
-    SizedBox(height: 3),
+    const SizedBox(height: 3),
     Text(
-    '${sampleAirData.PM2!}',
-    style: TextStyle(
+    '${sampleAirData.pm25!}',
+    style:const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,
     fontSize: 20),
     ),
     Text(
-    'Exp_1h: ${samplePredData.PM2[0]!.toStringAsFixed(0)}',
-    style: TextStyle(
+    'Exp_1h: ${samplePredData.pm25[0]!.toStringAsFixed(0)}',
+    style: const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w300,
     fontSize: 20),
@@ -657,9 +657,9 @@ class OutdoorScreen extends StatelessWidget {
     MaterialPageRoute(
     builder: (context) => DetailScreen(
     parameterName: 'PM10',
-    parameterData: samplePredData.PM10,
-    parameterValue: sampleAirData.PM10,
-    predictedValue: samplePredData.PM10[0],
+    parameterData: samplePredData.pm10,
+    parameterValue: sampleAirData.pm10,
+    predictedValue: samplePredData.pm10[0],
     speedValue: 75,
     colorUp: colorUp,
     colorDown: colorDown,)));
@@ -668,33 +668,33 @@ class OutdoorScreen extends StatelessWidget {
     },
     child: Row(
     children: [
-    Icon(
+    const Icon(
     CupertinoIcons.waveform_path,
     color: Colors.white,
     size: 35,
     ),
-    SizedBox(width: 5),
+    const SizedBox(width: 5),
     Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-    Text(
+    const Text(
     'PM10',
     style: TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w300,
     fontSize: 20),
     ),
-    SizedBox(height: 3),
+    const SizedBox(height: 3),
     Text(
-    '${sampleAirData.PM10!}',
-    style: TextStyle(
+    '${sampleAirData.pm10!}',
+    style: const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w700,
     fontSize: 20),
     ),
     Text(
-    'Exp_1h: ${samplePredData.PM10[0]!.toStringAsFixed(0)}',
-    style: TextStyle(
+    'Exp_1h: ${samplePredData.pm10[0]!.toStringAsFixed(0)}',
+    style: const TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w300,
     fontSize: 20),
@@ -706,7 +706,7 @@ class OutdoorScreen extends StatelessWidget {
     ),
     ],
     ),
-    SizedBox(height: 6),
+    const SizedBox(height: 6),
     ],
     ),
     ),
@@ -725,21 +725,21 @@ class OutdoorScreen extends StatelessWidget {
 
 class SampleAirData {
   final dynamic aqi;
-  final dynamic Co;
-  final dynamic NO2;
-  final dynamic O3;
-  final dynamic So2;
-  final dynamic PM2;
-  final dynamic PM10;
+  final dynamic co;
+  final dynamic no2;
+  final dynamic o3;
+  final dynamic so2;
+  final dynamic pm25;
+  final dynamic pm10;
 
   SampleAirData({
     this.aqi,
-    this.Co,
-    this.NO2,
-    this.O3,
-    this.So2,
-    this.PM2,
-    this.PM10,
+    this.co,
+    this.no2,
+    this.o3,
+    this.so2,
+    this.pm25,
+    this.pm10,
   });
   
   
@@ -747,12 +747,12 @@ class SampleAirData {
   factory SampleAirData.fromJson(Map<String, dynamic> json) {
     return SampleAirData(
       aqi: json['data'][0]['aqi'],
-      Co: json['data'][0]['co'],
-      NO2: json['data'][0]['no2'],
-      O3: json['data'][0]['o3'],
-      So2: json['data'][0]['so2'],
-      PM2: json['data'][0]['pm25'],
-      PM10: json['data'][0]['pm10'],
+      co: json['data'][0]['co'],
+      no2: json['data'][0]['no2'],
+      o3: json['data'][0]['o3'],
+      so2: json['data'][0]['so2'],
+      pm25: json['data'][0]['pm25'],
+      pm10: json['data'][0]['pm10'],
     );
   }
 }
@@ -783,34 +783,34 @@ class SampleWeatherData {
 class SamplePredData {
   final dynamic temp;
   final dynamic aqi;
-  final dynamic Co;
-  final dynamic NO2;
-  final dynamic O3;
-  final dynamic So2;
-  final dynamic PM2;
-  final dynamic PM10;
+  final dynamic co;
+  final dynamic no2;
+  final dynamic o3;
+  final dynamic so2;
+  final dynamic pm25;
+  final dynamic pm10;
 
   SamplePredData({
     this.temp,
     this.aqi,
-    this.Co,
-    this.NO2,
-    this.O3,
-    this.So2,
-    this.PM2,
-    this.PM10,
+    this.co,
+    this.no2,
+    this.o3,
+    this.so2,
+    this.pm25,
+    this.pm10,
   });
 
   factory SamplePredData.fromJson(Map<String, dynamic> json) {
     return SamplePredData(
       temp: json['temp'],
       aqi: json['aqi'],
-      Co: json['co'],
-      NO2: json['no2'],
-      O3: json['o3'],
-      So2: json['so2'],
-      PM2: json['pm25'],
-      PM10: json['pm10'],
+      co: json['co'],
+      no2: json['no2'],
+      o3: json['o3'],
+      so2: json['so2'],
+      pm25: json['pm25'],
+      pm10: json['pm10'],
     );
   }
 }
