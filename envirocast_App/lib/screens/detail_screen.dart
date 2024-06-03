@@ -2,12 +2,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
-import 'package:kdgaugeview/kdgaugeview.dart';
 import 'package:intl/intl.dart'; // Import the intl package
 
 class DetailScreen extends StatelessWidget {
   final String parameterName;
   final List<dynamic> parameterData;
+  final List<dynamic> parameterRange;
   final double parameterValue;
   final double predictedValue;
   final double speedValue;
@@ -17,6 +17,7 @@ class DetailScreen extends StatelessWidget {
   const DetailScreen({
     Key? key,
     required this.parameterName,
+    required this.parameterRange,
     required this.parameterData,
     required this.parameterValue,
     required this.predictedValue,
@@ -26,11 +27,11 @@ class DetailScreen extends StatelessWidget {
   }) : super(key: key);
 
   Color getGaugeColor() {
-    if (speedValue < 50) {
+    if (speedValue < parameterRange[0]) {
       return Colors.green; // Good
-    } else if (speedValue < 100) {
+    } else if (speedValue < parameterRange[1]) {
       return Colors.yellow; // Moderate
-    } else if (speedValue < 150) {
+    } else if (speedValue < parameterRange[2]) {
       return Colors.orange; // Unhealthy
     } else {
       return Colors.red; // Poor
@@ -80,11 +81,15 @@ class DetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Ensure parameterData is cast to List<double>
     final List<double> forecastValues = parameterData.map((e) => (e as num).toDouble()).toList();
+    // Get the current time
+    final DateTime now = DateTime.now();
 
+    // Create a DateTime object representing the start of the current hour
+    final DateTime startOfCurrentHour = DateTime(now.year, now.month, now.day, now.hour);
     final List<PollutantData> forecastData = List.generate(
       168, // 7 days * 24 hours
           (index) => PollutantData(
-        dateTime: DateTime.now().add(Duration(hours: index)),
+        dateTime: startOfCurrentHour.add(Duration(hours: index+1)),
         value: forecastValues[index % forecastValues.length], // Use modulo to prevent out-of-range error
       ),
     );
@@ -92,7 +97,6 @@ class DetailScreen extends StatelessWidget {
     final gaugeColor = getGaugeColor();
     final conditionText = getConditionText();
     final conditionFace = getConditionFace();
-
     return Scaffold(
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
@@ -151,13 +155,10 @@ class DetailScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    const Center(
+                    Center(
                       child: Text(
-                        'Detail',
-                        style: TextStyle(
+                        parameterName,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 35,
                           fontWeight: FontWeight.w500,
@@ -165,103 +166,71 @@ class DetailScreen extends StatelessWidget {
                       ),
                     ),
                     Transform.scale(
-                      scale: 0.8, // Adjust the scale factor as needed
+                      scale: 1.0, // Adjust the scale factor as needed
                       child: Lottie.asset(
                         conditionFace,
                       ),
                     ),
-                    ///////////**********Attributes************//////////
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              parameterName,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                            Center(
+                              child: Text(
+                                parameterValue.toStringAsFixed(0),
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 55,
+                                    fontWeight: FontWeight.w600),
                               ),
                             ),
-                            const SizedBox(height: 1),
-                            Text(
-                              '$parameterValue',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
+                            Center(
+                              child: Text(
+                                conditionText,
+                                style: TextStyle(
+                                    color: gaugeColor,
+                                    fontSize: 35,
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
-                            // to print the Good Moderate... with color
-                            const SizedBox(height: 1),
-                            Text(
-                              conditionText,
-                              style: TextStyle(
-                                color: gaugeColor,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
+                            const SizedBox(height: 5),
+                            Center(
+                              child: Text(
+                                DateFormat('EEEE dd •')
+                                    .add_jm()
+                                    .format(DateTime.now()),
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w300),
                               ),
                             ),
-                            const SizedBox(height: 1),
-                          ],
-                        ),
-                        // KdGauge
-                        Container(
-                          width: 190,
-                          height: 150,
-                          child: KdGaugeView(
-                            minSpeed: 0,
-                            maxSpeed: 200,
-                            speed: speedValue,
-                            animate: true,
-                            duration: const Duration(seconds: 5),
-                            alertSpeedArray: const [0, 50, 100, 150],
-                            alertColorArray: const [
-                              Colors.green,
-                              Colors.yellow,
-                              Colors.orange,
-                              Colors.red
-                            ],
-                            unitOfMeasurement: "ppm",
-                            gaugeWidth: 10,
-                            minMaxTextStyle: const TextStyle(
-                                color: Colors.white, fontSize: 15),
-                            unitOfMeasurementTextStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                            speedTextStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold),
-                            divisionCircleColors: Colors.purpleAccent,
-                            innerCirclePadding: 20,
-                          ),
-                        ),
-                      ],
-                    ),
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 14.0),
                       child: Divider(
                         color: Colors.grey,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const Center(
+                      child:
+                      Text(
+                        "Forecast",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 35,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
                     ListView.builder(
+                      padding: EdgeInsets.zero,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(), // Prevent inner scrolling
                       itemCount: forecastData.length,
                       itemBuilder: (context, index) {
                         final data = forecastData[index];
-                        final formattedDate = DateFormat('hh:mm a, dd/MM').format(data.dateTime); // Format date and time
+                        final formattedDate = DateFormat('EEEE dd •').add_jm().format(data.dateTime); // Format date and time
                         return Card(
-                          margin: const EdgeInsets.all(8.0),
                           child: ListTile(
                             title: Text(formattedDate),
                             subtitle: Text(
-                              'Pollutant Value: ${data.value.toStringAsFixed(2)}',
+                              '$parameterName : ${data.value.toStringAsFixed(0)}',
                             ),
                           ),
                         );

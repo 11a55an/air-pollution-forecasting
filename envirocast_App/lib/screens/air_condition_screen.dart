@@ -135,7 +135,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     child: KdGaugeView(
     minSpeed: 0,
     maxSpeed: 200,
-    speed: 105,
+    speed: dust.toDouble(),
     animate: true,
     duration: const Duration(seconds: 5),
     alertSpeedArray: const[50, 100, 150, 200],
@@ -224,7 +224,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     ),
     const SizedBox(height: 1),
     Text(
-    '${temperature!}',
+    '${temperature!.toStringAsFixed(0)}',
     style: const TextStyle(
     color: Colors.white,
     fontSize: 20,
