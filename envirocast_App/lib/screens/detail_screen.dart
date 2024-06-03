@@ -165,11 +165,14 @@ class DetailScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    Center(
+                      child:
                     Transform.scale(
                       scale: 1.0, // Adjust the scale factor as needed
                       child: Lottie.asset(
                         conditionFace,
                       ),
+                    ),
                     ),
                             Center(
                               child: Text(

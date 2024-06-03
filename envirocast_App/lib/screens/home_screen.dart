@@ -8,16 +8,30 @@ import 'package:intl/intl.dart';
 import 'package:envirocast/bloc/weather_bloc_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 import 'air_condition_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final Position position;
+  const HomeScreen({
+    Key? key,
+    required this.position,
+  }) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late Future<String> cityNameFuture;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+
   Future<Map<String, dynamic>> fetchAirData() async {
     // Get today's date
     DateTime startDate = DateTime.now();
@@ -29,7 +43,12 @@ class _HomeScreenState extends State<HomeScreen> {
     String formattedEndDate = DateFormat('yyyy-MM-dd').format(endDate);
     String formattedStartDate = DateFormat('yyyy-MM-dd').format(startDate);
 
-    String weatherUrl = 'https://api.weatherbit.io/v2.0/history/hourly?city=Gujrat&tz=local&start_date=$formattedStartDate&end_date=$formattedEndDate&key=42439ec554bf49f7b59e4e0f08f45c9f';
+
+    double lat = widget.position.latitude;
+    double lon = widget.position.longitude;
+
+
+    String weatherUrl = 'https://api.weatherbit.io/v2.0/history/hourly?lat=$lat&lon=$lon&tz=local&start_date=$formattedStartDate&end_date=$formattedEndDate&key=42439ec554bf49f7b59e4e0f08f45c9f';
 
     // Make the HTTP GET requests
     final responseTemp = await http.get(Uri.parse(weatherUrl));
@@ -380,6 +399,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   AirConditionScreen(
                                                     colorUp: colorUp,
                                                     colorDown: colorDown,
+                                                    position: widget.position,
                                                   )));
                                     },
                                     onDoubleTap: () {},

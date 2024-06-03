@@ -208,7 +208,6 @@ def index():
     return "Hello World"
 
 # AQI
-@app.route('/aqi', methods=['POST'])
 def aqi():
     aqi = data[['aqi']]
     aqi_data = aqi[::-1]
@@ -220,7 +219,6 @@ def aqi():
     return forecast.tolist()
 
 # CO
-@app.route('/co', methods=['POST'])
 def co():
     co = data[['co']]
     co_data = co[::-1]
@@ -231,7 +229,6 @@ def co():
     return forecast.tolist()
 
 # NO2
-@app.route('/no2', methods=['POST'])
 def no2():
     no2 = data[['no2']]
     no2_data = no2[::-1]
@@ -242,7 +239,6 @@ def no2():
     return forecast.tolist()
 
 # O3
-@app.route('/o3', methods=['POST'])
 def o3():
     o3 = data[['o3']]
     o3_data = o3[::-1]
@@ -253,7 +249,6 @@ def o3():
     return forecast.tolist()
 
 # PM10
-@app.route('/pm10', methods=['POST'])
 def pm10():
     pm10 = data[['pm10']]
     pm10_data = pm10[::-1]
@@ -264,7 +259,6 @@ def pm10():
     return forecast.tolist()
 
 # PM2.5
-@app.route('/pm25', methods=['POST'])
 def pm25():
     pm25 = data[['pm10']]
     pm25_data = pm25[::-1]
@@ -275,7 +269,6 @@ def pm25():
     return forecast.tolist()
 
 # SO2
-@app.route('/so2', methods=['POST'])
 def so2():
     so2 = data[['so2']]
     so2_data = so2[::-1]
@@ -286,7 +279,6 @@ def so2():
     return forecast.tolist()
 
 # Temp
-@app.route('/temp', methods=['POST'])
 def temp():
     temp_data = scalerTemp.transform(dataTemp)
     forecast = forecast_next_steps(temp_model,temp_data)

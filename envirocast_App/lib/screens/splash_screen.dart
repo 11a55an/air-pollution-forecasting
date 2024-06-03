@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   create: (context) => WeatherBlocBloc()..add(
                       FetchWeather(snap.data as Position)
                   ),
-                  child: const HomeScreen(),
+                  child: HomeScreen(position: snap.data as Position),
                   //child: const AirConditionScreen(),
 
                 );
@@ -63,22 +63,18 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.blue, Colors.purple],
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-            )
+          gradient: LinearGradient(
+            colors: [Colors.blue, Colors.purple],
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+          ),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-
           children: [
-
             const SizedBox(height: 60,),
 
             Text(
               'Envirocast',
-              //style: TextStyle(
               style: GoogleFonts.pacifico(
                 fontSize: 42,
                 color: Colors.white,
@@ -86,35 +82,39 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               ),
             ),
 
-            Lottie.asset(
-              'assets/workspace.json',
+            Expanded(
+              flex: 2,
+              child: Lottie.asset(
+                'assets/workspace.json',
+              ),
             ),
+
             const SizedBox(height: 10,),
 
             Text(
-              'Take Control Of Your Air, Breathe',
-              //style: TextStyle(
+              'Take Control Of Your Air,',
               style: GoogleFonts.dancingScript(
                 fontSize: 28,
                 color: Colors.white,
-
-                //fontStyle: FontStyle.italic,
               ),
             ),
+
             Text(
-              'Clean With Envirocast',
-              //style: TextStyle(
+              'Breathe Clean With Envirocast',
               style: GoogleFonts.dancingScript(
                 fontSize: 28,
                 color: Colors.white,
-
-                //fontStyle: FontStyle.italic,
               ),
             ),
-            Lottie.asset(
-              'assets/loading.json',
+
+            Expanded(
+              flex: 1,
+              child: Lottie.asset(
+                'assets/loading.json',
+              ),
             ),
 
+            const SizedBox(height: 60,), // Optional bottom padding if needed
           ],
         ),
       ),

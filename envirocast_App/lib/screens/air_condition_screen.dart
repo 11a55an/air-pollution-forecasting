@@ -7,14 +7,17 @@ import 'package:flutter/services.dart';
 import 'home_screen.dart';
 import 'outdoor_screen.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:geolocator/geolocator.dart';
 
 class AirConditionScreen extends StatefulWidget {
   final Color colorUp;
   final Color colorDown;
+  final Position position;
   const AirConditionScreen({
     Key? key,
     required this.colorUp,
     required this.colorDown,
+    required this.position,
   }) : super(key: key);
   @override
   _AirConditionScreenState createState() => _AirConditionScreenState();
@@ -128,6 +131,8 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     const Padding(
     padding: EdgeInsets.symmetric(vertical: 10.0),
     ),
+    Center(
+      child:
     Container(
     width: 320,
     height: 300,
@@ -145,7 +150,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     Colors.orange,
     Colors.red
     ],
-    unitOfMeasurement: "ppm",
+    unitOfMeasurement: "Dust",
     gaugeWidth: 15,
     minMaxTextStyle: const TextStyle(
     color: Colors.white, fontSize: 20),
@@ -161,6 +166,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     ),
     ),
     ),
+    ),
 
     Center(
     child: ElevatedButton(
@@ -169,7 +175,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     context,
     MaterialPageRoute(
     builder: (context) =>
-    OutdoorScreen(colorUp: widget.colorUp,
+    OutdoorScreen(position: widget.position, colorUp: widget.colorUp,
     colorDown: widget.colorDown,)),
     );
     },
@@ -444,7 +450,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
     Navigator.pop(
     context,
     MaterialPageRoute(
-    builder: (context) => const HomeScreen()));
+    builder: (context) => HomeScreen(position: widget.position,)));
     },
     onDoubleTap: () {},
     onSwipe: () {},

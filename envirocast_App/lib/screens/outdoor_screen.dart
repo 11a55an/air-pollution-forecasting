@@ -7,21 +7,26 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class OutdoorScreen extends StatelessWidget {
   final Color colorUp;
   final Color colorDown;
+  final Position position;
   const OutdoorScreen({
     Key? key,
+    required this.position,
     required this.colorUp,
     required this.colorDown,
   }) : super(key: key);
-
   Future<Map<String, dynamic>> fetchAirData() async {
+    final double lat = position.latitude;
+    final double lon = position.longitude;
     final response = await http.get(Uri.parse(
-        'https://api.weatherbit.io/v2.0/history/airquality?city=Gujrat&tz=local&key=42439ec554bf49f7b59e4e0f08f45c9f'));
+        'https://api.weatherbit.io/v2.0/history/airquality?lat=$lat&lon=$lon&tz=local&key=42439ec554bf49f7b59e4e0f08f45c9f'));
     final responsePred = await http.post(Uri.parse(
-        'http://ec2-16-16-98-137.eu-north-1.compute.amazonaws.com:8080/all'));
+        'http://127.0.0.1:8080//all'));
     // Get today's date
     DateTime startDate = DateTime.now();
 
@@ -34,7 +39,7 @@ class OutdoorScreen extends StatelessWidget {
 
     // Construct the URL with query parameters
     String url =
-        'https://api.weatherbit.io/v2.0/history/hourly?city=Gujrat&tz=local&start_date=$formattedStartDate&end_date=$formattedEndDate&key=42439ec554bf49f7b59e4e0f08f45c9f';
+        'https://api.weatherbit.io/v2.0/history/hourly?lat=$lat&lon=$lon&tz=local&start_date=$formattedStartDate&end_date=$formattedEndDate&key=42439ec554bf49f7b59e4e0f08f45c9f';
 
     // Make the HTTP GET request
     final responseTemp = await http.get(Uri.parse(url));
@@ -155,6 +160,8 @@ class OutdoorScreen extends StatelessWidget {
                                       padding:
                                           EdgeInsets.symmetric(vertical: 10.0),
                                     ),
+                                    Center(
+                                      child:
                                     Container(
                                       width: 320,
                                       height: 300,
@@ -194,6 +201,7 @@ class OutdoorScreen extends StatelessWidget {
                                           //activeGaugeColor: Colors.white,
                                         ),
                                       ),
+                                    ),
                                     ),
                                     const Padding(
                                       padding:
