@@ -24,7 +24,7 @@ class OutdoorScreen extends StatelessWidget {
     final double lat = position.latitude;
     final double lon = position.longitude;
     final response = await http.get(Uri.parse(
-        'https://api.weatherbit.io/v2.0/history/airquality?lat=$lat&lon=$lon&tz=local&key=42439ec554bf49f7b59e4e0f08f45c9f'));
+        'https://api.weatherbit.io/v2.0/history/airquality?lat=$lat&lon=$lon&tz=local&key=4aa42fc9ef084abf8b9c0656acf29d38'));
     final responsePred = await http.post(Uri.parse(
         'http://127.0.0.1:8080//all'));
     // Get today's date
@@ -39,7 +39,7 @@ class OutdoorScreen extends StatelessWidget {
 
     // Construct the URL with query parameters
     String url =
-        'https://api.weatherbit.io/v2.0/history/hourly?lat=$lat&lon=$lon&tz=local&start_date=$formattedStartDate&end_date=$formattedEndDate&key=42439ec554bf49f7b59e4e0f08f45c9f';
+        'https://api.weatherbit.io/v2.0/history/hourly?lat=$lat&lon=$lon&tz=local&start_date=$formattedStartDate&end_date=$formattedEndDate&key=4aa42fc9ef084abf8b9c0656acf29d38';
 
     // Make the HTTP GET request
     final responseTemp = await http.get(Uri.parse(url));

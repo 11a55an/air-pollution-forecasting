@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
     double lon = widget.position.longitude;
 
 
-    String weatherUrl = 'https://api.weatherbit.io/v2.0/history/hourly?lat=$lat&lon=$lon&tz=local&start_date=$formattedStartDate&end_date=$formattedEndDate&key=42439ec554bf49f7b59e4e0f08f45c9f';
+    String weatherUrl = 'https://api.weatherbit.io/v2.0/history/hourly?lat=$lat&lon=$lon&tz=local&start_date=$formattedStartDate&end_date=$formattedEndDate&key=4aa42fc9ef084abf8b9c0656acf29d38';
 
     // Make the HTTP GET requests
     final responseTemp = await http.get(Uri.parse(weatherUrl));
