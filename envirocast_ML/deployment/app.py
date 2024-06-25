@@ -20,7 +20,6 @@ valuesAQI = aqi.values
 valuesAQI = valuesAQI.astype('float32')
 scalerAQI = MinMaxScaler(feature_range=(0, 1))
 scaled_AQI = scalerAQI.fit_transform(valuesAQI)
-pollAQI = np.array(df["aqi"])
 aqi_model = load_model("1dcnn_aqi.keras")
 
 # CO Data
@@ -29,7 +28,6 @@ valuesCO = co.values
 valuesCO = valuesCO.astype('float32')
 scalerCO = MinMaxScaler(feature_range=(0, 1))
 scaled_CO = scalerCO.fit_transform(valuesCO)
-pollCO = np.array(df["co"])
 co_model = load_model("1dcnn_co.keras")
 
 # NO2 Data
@@ -38,7 +36,6 @@ valuesNO = no2.values
 valuesNO = valuesNO.astype('float32')
 scalerNO = MinMaxScaler(feature_range=(0, 1))
 scaled_NO = scalerNO.fit_transform(valuesNO)
-pollNO = np.array(df["no2"])
 no_model = load_model("1dcnn_no2.keras")
 
 # O3 Data
@@ -47,16 +44,14 @@ valuesO3 = o3.values
 valuesO3 = valuesO3.astype('float32')
 scalerO3 = MinMaxScaler(feature_range=(0, 1))
 scaled_O3 = scalerO3.fit_transform(valuesO3)
-pollO3 = np.array(df["o3"])
 o3_model = load_model("1dcnn_o3.keras")
 
 # PM10 Data
-pm10 = df[['o3']]
+pm10 = df[['pm10']]
 valuesPM10 = pm10.values
 valuesPM10 = valuesPM10.astype('float32')
 scalerPM10 = MinMaxScaler(feature_range=(0, 1))
 scaled_PM10 = scalerPM10.fit_transform(valuesPM10)
-pollPM10 = np.array(df["pm10"])
 pm10_model = load_model("1dcnn_pm10.keras")
 
 # PM25 Data
@@ -65,7 +60,6 @@ valuesPM25 = pm25.values
 valuesPM25 = valuesPM25.astype('float32')
 scalerPM25 = MinMaxScaler(feature_range=(0, 1))
 scaled_PM25 = scalerPM25.fit_transform(valuesPM25)
-pollPM25 = np.array(df["pm25"])
 pm25_model = load_model("1dcnn_pm25.keras")
 
 # SO2 Data
@@ -74,7 +68,6 @@ valuesSO2 = so2.values
 valuesSO2 = valuesSO2.astype('float32')
 scalerSO2 = MinMaxScaler(feature_range=(0, 1))
 scaled_SO2 = scalerSO2.fit_transform(valuesSO2)
-pollSO2 = np.array(df["so2"])
 so2_model = load_model("1dcnn_so2.keras")
 
 # Temp Data
@@ -83,13 +76,12 @@ valuesTemp = temp.values
 valuesTemp = valuesTemp.astype('float32')
 scalerTemp = MinMaxScaler(feature_range=(0, 1))
 scaled_Temp = scalerTemp.fit_transform(valuesTemp)
-pollTemp = np.array(df["temp"])
 temp_model = load_model("1dcnn_temp.keras")
 
 # Forecast Next 168 Steps
 def forecast_next_steps(model, data, n_steps=168):
     predicted_value = model.predict(data.reshape(1, 168, 1))
-    predicted_value = predicted_value
+    # print(predicted_value)
     # forecast = []
     # data = np.array(data).reshape((1, 1, len(data)))
     # # Reverse the array
@@ -114,9 +106,9 @@ def forecast_next_steps(model, data, n_steps=168):
 def fetch_pollution_data():
     dateToday = date.today() + timedelta(days=1)
     datePrev = dateToday - timedelta(days=8)
-    print(dateToday, datePrev)
+    # print(dateToday, datePrev)
     
-    print("Fetching data from", datePrev, "to", dateToday)
+    # print("Fetching data from", datePrev, "to", dateToday)
     
     # Define the API endpoint and parameters
     api_url = "https://api.weatherbit.io/v2.0/history/airquality"
@@ -136,10 +128,10 @@ def fetch_pollution_data():
         # Parse the JSON response
         global data
         data = response.json()
-        print("Data fetched successfully:")
+        print("Pollution Data fetched successfully:")
         data = data['data']
         data = pd.DataFrame(data)
-        print(data)
+        # print(data)
     else:
         print(f"Failed to fetch data. HTTP Status code: {response.status_code}")
         print(response.text)
@@ -149,7 +141,7 @@ def fetch_temp_data():
     dateToday = date.today()+ timedelta(days=1)
     datePrev = dateToday - timedelta(days=8)
     
-    print("Fetching data from", datePrev, "to", dateToday)
+    # print("Fetching data from", datePrev, "to", dateToday)
     
     # Define the API endpoint and parameters
     api_url = "https://api.weatherbit.io/v2.0/history/hourly"
@@ -169,14 +161,14 @@ def fetch_temp_data():
         # Parse the JSON response
         global dataTemp
         dataTemp = response.json()
-        print("Data fetched successfully:")
+        print("Temp Data fetched successfully:")
         dataTemp = dataTemp['data']
         dataTemp = pd.DataFrame(dataTemp)
         dataTemp = dataTemp[['app_temp']]
         dataTemp = dataTemp.dropna()
         dataTemp = dataTemp[-168:]
         # dataTemp = dataTemp.tail(168)
-        print(dataTemp)
+        # print(dataTemp)
     else:
         print(f"Failed to fetch data. HTTP Status code: {response.status_code}")
         print(response.text)
@@ -192,6 +184,7 @@ def index():
     return "Hello World"
 
 # AQI
+@app.route('/aqi', methods=['POST'])
 def aqi():
     aqi = data[['aqi']]
     aqi_data = aqi[::-1]
@@ -200,9 +193,11 @@ def aqi():
     aqi_data = scalerAQI.transform(aqi_data)
     forecast = forecast_next_steps(aqi_model,aqi_data)
     forecast = scalerAQI.inverse_transform(forecast)
+    forecast = forecast.flatten()
     return forecast.tolist()
 
 # CO
+@app.route('/co', methods=['POST'])
 def co():
     co = data[['co']]
     co_data = co[::-1]
@@ -210,9 +205,11 @@ def co():
     co_data = scalerCO.transform(co_data)
     forecast = forecast_next_steps(co_model,co_data)
     forecast = scalerCO.inverse_transform(forecast)
+    forecast = forecast.flatten()
     return forecast.tolist()
 
 # NO2
+@app.route('/no2', methods=['POST'])
 def no2():
     no2 = data[['no2']]
     no2_data = no2[::-1]
@@ -220,9 +217,11 @@ def no2():
     no2_data = scalerNO.transform(no2_data)
     forecast = forecast_next_steps(no_model,no2_data)
     forecast = scalerNO.inverse_transform(forecast)
+    forecast = forecast.flatten()
     return forecast.tolist()
 
 # O3
+@app.route('/o3', methods=['POST'])
 def o3():
     o3 = data[['o3']]
     o3_data = o3[::-1]
@@ -230,9 +229,11 @@ def o3():
     o3_data = scalerO3.transform(o3_data)
     forecast = forecast_next_steps(o3_model,o3_data)
     forecast = scalerO3.inverse_transform(forecast)
+    forecast = forecast.flatten()
     return forecast.tolist()
 
 # PM10
+@app.route('/pm10', methods=['POST'])
 def pm10():
     pm10 = data[['pm10']]
     pm10_data = pm10[::-1]
@@ -240,19 +241,23 @@ def pm10():
     pm10_data = scalerPM10.transform(pm10_data)
     forecast = forecast_next_steps(pm10_model,pm10_data)
     forecast = scalerPM10.inverse_transform(forecast)
+    forecast = forecast.flatten()
     return forecast.tolist()
 
 # PM2.5
+@app.route('/pm25', methods=['POST'])
 def pm25():
-    pm25 = data[['pm10']]
+    pm25 = data[['pm25']]
     pm25_data = pm25[::-1]
     pm25_data = pm25_data[-168:]
     pm25_data = scalerPM25.transform(pm25_data)
     forecast = forecast_next_steps(pm25_model,pm25_data)
     forecast = scalerPM25.inverse_transform(forecast)
+    forecast = forecast.flatten()
     return forecast.tolist()
 
 # SO2
+@app.route('/so2', methods=['POST'])
 def so2():
     so2 = data[['so2']]
     so2_data = so2[::-1]
@@ -260,16 +265,22 @@ def so2():
     so2_data = scalerSO2.transform(so2_data)
     forecast = forecast_next_steps(so2_model,so2_data)
     forecast = scalerSO2.inverse_transform(forecast)
+    forecast = forecast.flatten()
     return forecast.tolist()
 
 # Temp
+@app.route('/temp', methods=['POST'])
 def temp():
     temp_data = scalerTemp.transform(dataTemp)
     forecast = forecast_next_steps(temp_model,temp_data)
+    print(forecast)
     forecast = scalerTemp.inverse_transform(forecast)
+    print(forecast.shape)
+    forecast = forecast.flatten()
+    print(type(forecast))
     return forecast.tolist()
 
-# Temp
+# All
 @app.route('/all', methods=['POST'])
 def all():
     temp_forecast = temp()
@@ -298,7 +309,7 @@ def sched():
 # Schedule the task to run every hour
 schedule.every().hour.do(sched)
 
-# # Keep the script running
+# # Keep the script running 
 while True:
     schedule.run_pending()
     time.sleep(1)

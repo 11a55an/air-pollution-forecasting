@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:envirocast/bloc/weather_bloc_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lottie/lottie.dart';
-
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,27 +15,24 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
-
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-
     Future.delayed(const Duration(seconds: 10), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (_) => FutureBuilder(
             future: _determinePosition(),
             builder: (context, snap) {
-              if(snap.hasData) {
+              if (snap.hasData) {
                 return BlocProvider<WeatherBlocBloc>(
-                  create: (context) => WeatherBlocBloc()..add(
-                      FetchWeather(snap.data as Position)
-                  ),
+                  create: (context) => WeatherBlocBloc()
+                    ..add(FetchWeather(snap.data as Position)),
                   child: HomeScreen(position: snap.data as Position),
                   //child: const AirConditionScreen(),
-
                 );
               } else {
                 return const Scaffold(
@@ -44,18 +41,18 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   ),
                 );
               }
-            }
-        ),
+            }),
       ));
     });
   }
+
   @override
   void dispose() {
     // TODO: implement dispose
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +68,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         ),
         child: Column(
           children: [
-            const SizedBox(height: 60,),
+            const SizedBox(
+              height: 60,
+            ),
 
             Text(
               'Envirocast',
@@ -89,7 +88,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               ),
             ),
 
-            const SizedBox(height: 10,),
+            const SizedBox(
+              height: 10,
+            ),
 
             Text(
               'Take Control Of Your Air,',
@@ -114,7 +115,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               ),
             ),
 
-            const SizedBox(height: 60,), // Optional bottom padding if needed
+            const SizedBox(
+              height: 60,
+            ), // Optional bottom padding if needed
           ],
         ),
       ),
@@ -154,8 +157,12 @@ Future<Position> _determinePosition() async {
         'Location permissions are permanently denied, we cannot request permissions.');
   }
 
+  bool isAllowedToSendNotification =
+      await AwesomeNotifications().isNotificationAllowed();
+  if (!isAllowedToSendNotification) {
+    AwesomeNotifications().requestPermissionToSendNotifications();
+  }
   // When we reach here, permissions are granted and we can
   // continue accessing the position of the device.
   return await Geolocator.getCurrentPosition();
 }
-

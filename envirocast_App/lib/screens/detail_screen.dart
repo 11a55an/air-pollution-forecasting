@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:intl/intl.dart'; // Import the intl package
+import 'package:fl_chart/fl_chart.dart'; // Import the fl_chart package
 
 class DetailScreen extends StatelessWidget {
   final String parameterName;
@@ -77,22 +78,38 @@ class DetailScreen extends StatelessWidget {
     }
   }
 
+  Map<DateTime, List<PollutantData>> groupForecastByDay(
+      List<PollutantData> forecastData) {
+    final Map<DateTime, List<PollutantData>> groupedData = {};
+    for (final data in forecastData) {
+      final day =
+          DateTime(data.dateTime.year, data.dateTime.month, data.dateTime.day);
+      if (groupedData.containsKey(day)) {
+        groupedData[day]!.add(data);
+      } else {
+        groupedData[day] = [data];
+      }
+    }
+    return groupedData;
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Ensure parameterData is cast to List<double>
-    final List<double> forecastValues = parameterData.map((e) => (e as num).toDouble()).toList();
-    // Get the current time
+    final List<double> forecastValues =
+        parameterData.map((e) => (e as num).toDouble()).toList();
     final DateTime now = DateTime.now();
-
-    // Create a DateTime object representing the start of the current hour
-    final DateTime startOfCurrentHour = DateTime(now.year, now.month, now.day, now.hour);
+    final DateTime startOfCurrentHour =
+        DateTime(now.year, now.month, now.day, now.hour);
     final List<PollutantData> forecastData = List.generate(
       168, // 7 days * 24 hours
-          (index) => PollutantData(
-        dateTime: startOfCurrentHour.add(Duration(hours: index+1)),
-        value: forecastValues[index % forecastValues.length], // Use modulo to prevent out-of-range error
+      (index) => PollutantData(
+        dateTime: startOfCurrentHour.add(Duration(hours: index + 1)),
+        value: forecastValues[index % forecastValues.length],
       ),
     );
+
+    final Map<DateTime, List<PollutantData>> groupedData =
+        groupForecastByDay(forecastData);
 
     final gaugeColor = getGaugeColor();
     final conditionText = getConditionText();
@@ -166,44 +183,41 @@ class DetailScreen extends StatelessWidget {
                       ),
                     ),
                     Center(
-                      child:
-                    Transform.scale(
-                      scale: 1.0, // Adjust the scale factor as needed
-                      child: Lottie.asset(
-                        conditionFace,
+                      child: Transform.scale(
+                        scale: 1.0, // Adjust the scale factor as needed
+                        child: Lottie.asset(
+                          conditionFace,
+                        ),
                       ),
                     ),
+                    Center(
+                      child: Text(
+                        parameterValue.toStringAsFixed(0),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 55,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
-                            Center(
-                              child: Text(
-                                parameterValue.toStringAsFixed(0),
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 55,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                            Center(
-                              child: Text(
-                                conditionText,
-                                style: TextStyle(
-                                    color: gaugeColor,
-                                    fontSize: 35,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Center(
-                              child: Text(
-                                DateFormat('EEEE dd •')
-                                    .add_jm()
-                                    .format(DateTime.now()),
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w300),
-                              ),
-                            ),
+                    Center(
+                      child: Text(
+                        conditionText,
+                        style: TextStyle(
+                            color: gaugeColor,
+                            fontSize: 35,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Center(
+                      child: Text(
+                        DateFormat('EEEE dd •').add_jm().format(DateTime.now()),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w300),
+                      ),
+                    ),
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 14.0),
                       child: Divider(
@@ -211,8 +225,7 @@ class DetailScreen extends StatelessWidget {
                       ),
                     ),
                     const Center(
-                      child:
-                      Text(
+                      child: Text(
                         "Forecast",
                         style: TextStyle(
                             color: Colors.white,
@@ -224,18 +237,24 @@ class DetailScreen extends StatelessWidget {
                     ListView.builder(
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(), // Prevent inner scrolling
-                      itemCount: forecastData.length,
+                      physics:
+                          const NeverScrollableScrollPhysics(), // Prevent inner scrolling
+                      itemCount: groupedData.keys.length,
                       itemBuilder: (context, index) {
-                        final data = forecastData[index];
-                        final formattedDate = DateFormat('EEEE dd •').add_jm().format(data.dateTime); // Format date and time
-                        return Card(
-                          child: ListTile(
-                            title: Text(formattedDate),
-                            subtitle: Text(
-                              '$parameterName : ${data.value.toStringAsFixed(0)}',
-                            ),
-                          ),
+                        final day = groupedData.keys.elementAt(index);
+                        final dayData = groupedData[day]!;
+                        final minValue = dayData
+                            .map((data) => data.value)
+                            .reduce((a, b) => a < b ? a : b);
+                        final maxValue = dayData
+                            .map((data) => data.value)
+                            .reduce((a, b) => a > b ? a : b);
+                        return DayForecastCard(
+                          day: day,
+                          minValue: minValue,
+                          maxValue: maxValue,
+                          dayData: dayData,
+                          parameterName: parameterName,
                         );
                       },
                     ),
@@ -245,6 +264,142 @@ class DetailScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class DayForecastCard extends StatefulWidget {
+  final DateTime day;
+  final double minValue;
+  final double maxValue;
+  final List<PollutantData> dayData;
+  final String parameterName;
+
+  const DayForecastCard({
+    Key? key,
+    required this.day,
+    required this.minValue,
+    required this.maxValue,
+    required this.dayData,
+    required this.parameterName,
+  }) : super(key: key);
+
+  @override
+  _DayForecastCardState createState() => _DayForecastCardState();
+}
+
+class _DayForecastCardState extends State<DayForecastCard> {
+  bool _expanded = false;
+
+  List<FlSpot> getGraphData() {
+    return widget.dayData
+        .map((data) =>
+            FlSpot(data.dateTime.hour + data.dateTime.minute / 60, data.value))
+        .toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Column(
+        children: [
+          ListTile(
+            title: Text(DateFormat('EEEE, MMM d').format(widget.day)),
+            subtitle: Text(
+                'Min ${widget.minValue.toStringAsFixed(0)}, Max ${widget.maxValue.toStringAsFixed(0)}'),
+            trailing: IconButton(
+              icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
+              onPressed: () {
+                setState(() {
+                  _expanded = !_expanded;
+                });
+              },
+            ),
+          ),
+          if (_expanded)
+            Column(
+              children: [
+                SizedBox(
+                  height: 200,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: LineChart(
+                      LineChartData(
+                        gridData: FlGridData(show: false),
+                        titlesData: FlTitlesData(
+                          bottomTitles: SideTitles(
+                            showTitles: true,
+                            getTextStyles: (context, value) => const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                            margin: 8,
+                            getTitles: (value) {
+                              return DateFormat('HH:mm').format(widget.day
+                                  .add(Duration(hours: value.toInt())));
+                            },
+                          ),
+                          leftTitles: SideTitles(
+                            showTitles: true,
+                            getTextStyles: (context, value) => const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                            margin: 8,
+                          ),
+                        ),
+                        borderData: FlBorderData(
+                          show: true,
+                          border: const Border(
+                            bottom: BorderSide(color: Colors.black, width: 1),
+                            left: BorderSide(color: Colors.black, width: 1),
+                            right: BorderSide(color: Colors.transparent),
+                            top: BorderSide(color: Colors.transparent),
+                          ),
+                        ),
+                        minX: 0,
+                        maxX: 23,
+                        minY: widget.dayData
+                            .map((data) => data.value)
+                            .reduce((a, b) => a < b ? a : b),
+                        maxY: widget.dayData
+                            .map((data) => data.value)
+                            .reduce((a, b) => a > b ? a : b),
+                        lineBarsData: [
+                          LineChartBarData(
+                            spots: getGraphData(),
+                            isCurved: true,
+                            colors: [Colors.blue],
+                            barWidth: 2,
+                            isStrokeCapRound: true,
+                            dotData: FlDotData(show: false),
+                            belowBarData: BarAreaData(show: false),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                ListView.builder(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: widget.dayData.length,
+                  itemBuilder: (context, index) {
+                    final data = widget.dayData[index];
+                    return ListTile(
+                      title: Text(DateFormat('jm').format(data.dateTime)),
+                      subtitle: Text(
+                          '${widget.parameterName} : ${data.value.toStringAsFixed(0)}'),
+                    );
+                  },
+                ),
+              ],
+            ),
+        ],
       ),
     );
   }
