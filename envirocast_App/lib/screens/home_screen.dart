@@ -31,27 +31,22 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<Map<String, dynamic>> fetchAirData() async {
-    // Get today's date
     DateTime startDate = DateTime.now();
-
-    // Get yesterday's date
     DateTime endDate = startDate.add(const Duration(days: 1));
 
-    // Format dates to 'YYYY-MM-DD'
     String formattedEndDate = DateFormat('yyyy-MM-dd').format(endDate);
     String formattedStartDate = DateFormat('yyyy-MM-dd').format(startDate);
 
     double lat = widget.position.latitude;
     double lon = widget.position.longitude;
     String weatherUrl =
-        'https://api.weatherbit.io/v2.0/history/hourly?city=Gujrat&tz=local&start_date=$formattedStartDate&end_date=$formattedEndDate&key=4aa42fc9ef084abf8b9c0656acf29d38';
+        'https://api.weatherbit.io/v2.0/history/hourly?lat=$lat&lon=$lon&tz=local&start_date=$formattedStartDate&end_date=$formattedEndDate&key=4aa42fc9ef084abf8b9c0656acf29d38';
 
     final responseTemp = await http.get(Uri.parse(weatherUrl));
 
     if (responseTemp.statusCode == 200) {
       Map<String, dynamic> weatherData = jsonDecode(responseTemp.body);
 
-      // Get the last non-null temperature JSON object
       List<dynamic> weatherDataList = weatherData['data'];
       Map<String, dynamic>? tempData;
       for (var item in weatherDataList.reversed) {
@@ -65,7 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
         throw Exception('No valid temperature data found');
       }
 
-      // Return both airData and tempData
       return {
         'tempData': tempData,
       };
@@ -75,30 +69,26 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget getWeatherIcon(int code) {
-    switch (code) {
-      case >= 200 && < 210 || >= 212 && < 300:
-        return Lottie.asset('assets/rainthunder.json');
-
-      //or 212 >= && < 300
-      case >= 210 && <= 212:
-        return Lottie.asset('assets/thunder.json');
-      case >= 300 && < 400:
-        return Lottie.asset('assets/rainsun.json');
-      case >= 500 && < 600:
-        return Lottie.asset('assets/heavyrain.json');
-      case >= 600 && < 700:
-        return Lottie.asset('assets/snow.json');
-      case >= 700 && < 800:
-        return Lottie.asset('assets/mist.json');
-      // sunny
-      case == 800:
-        return Lottie.asset('assets/sunny.json');
-      case > 800 && <= 803:
-        return Lottie.asset('assets/sunnycloudy.json');
-      case == 804:
-        return Lottie.asset('assets/cloudy.json');
-      default:
-        return Lottie.asset('assets/sunnycloudy.json');
+    if (code >= 200 && code < 210 || code >= 212 && code < 300) {
+      return Lottie.asset('assets/rainthunder.json');
+    } else if (code >= 210 && code <= 212) {
+      return Lottie.asset('assets/thunder.json');
+    } else if (code >= 300 && code < 400) {
+      return Lottie.asset('assets/rainsun.json');
+    } else if (code >= 500 && code < 600) {
+      return Lottie.asset('assets/heavyrain.json');
+    } else if (code >= 600 && code < 700) {
+      return Lottie.asset('assets/snow.json');
+    } else if (code >= 700 && code < 800) {
+      return Lottie.asset('assets/mist.json');
+    } else if (code == 800) {
+      return Lottie.asset('assets/sunny.json');
+    } else if (code > 800 && code <= 803) {
+      return Lottie.asset('assets/sunnycloudy.json');
+    } else if (code == 804) {
+      return Lottie.asset('assets/cloudy.json');
+    } else {
+      return Lottie.asset('assets/sunnycloudy.json');
     }
   }
 
@@ -125,6 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
       colorUp = Colors.blue;
       colorDown = Colors.deepPurple;
     }
+
     return Scaffold(
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
@@ -136,65 +127,68 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(40, 1.2 * kToolbarHeight, 40, 20),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: FutureBuilder<Map<String, dynamic>>(
-              future: fetchAirData(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else {
-                  Map<String, dynamic> tempData = snapshot.data!['tempData'];
-                  return Stack(
-                    children: [
-                      Align(
-                        alignment: const AlignmentDirectional(3, -0.3),
-                        child: Container(
-                          height: 300,
-                          width: 300,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: colorDown,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            bool isLandscape = constraints.maxWidth > constraints.maxHeight;
+            double circleSize = isLandscape ? 200 : 300;
+
+            return SizedBox(
+              height: constraints.maxHeight,
+              child: FutureBuilder<Map<String, dynamic>>(
+                future: fetchAirData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else {
+                    Map<String, dynamic> tempData = snapshot.data!['tempData'];
+                    return Stack(
+                      children: [
+                        Align(
+                          alignment: const AlignmentDirectional(3, -0.3),
+                          child: Container(
+                            height: circleSize,
+                            width: circleSize,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: colorDown,
+                            ),
                           ),
                         ),
-                      ),
-                      Align(
-                        alignment: const AlignmentDirectional(-3, -0.3),
-                        child: Container(
-                          height: 300,
-                          width: 300,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: colorDown,
+                        Align(
+                          alignment: const AlignmentDirectional(-3, -0.3),
+                          child: Container(
+                            height: circleSize,
+                            width: circleSize,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: colorDown,
+                            ),
                           ),
                         ),
-                      ),
-                      Align(
-                        alignment: const AlignmentDirectional(0, -1.2),
-                        child: Container(
-                          height: 300,
-                          width: 600,
-                          decoration: BoxDecoration(
-                            color: colorUp,
+                        Align(
+                          alignment: const AlignmentDirectional(0, -1.2),
+                          child: Container(
+                            height: circleSize,
+                            width: circleSize * 2,
+                            decoration: BoxDecoration(
+                              color: colorUp,
+                            ),
                           ),
                         ),
-                      ),
-                      BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 100.0, sigmaY: 100.0),
-                        child: Container(
-                          decoration:
-                              const BoxDecoration(color: Colors.transparent),
+                        BackdropFilter(
+                          filter:
+                              ImageFilter.blur(sigmaX: 100.0, sigmaY: 100.0),
+                          child: Container(
+                            decoration:
+                                const BoxDecoration(color: Colors.transparent),
+                          ),
                         ),
-                      ),
-                      BlocBuilder<WeatherBlocBloc, WeatherBlocState>(
-                        builder: (context, state) {
-                          if (state is WeatherBlocSuccess) {
-                            return SingleChildScrollView(
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                height: MediaQuery.of(context).size.height,
+                        BlocBuilder<WeatherBlocBloc, WeatherBlocState>(
+                          builder: (context, state) {
+                            if (state is WeatherBlocSuccess) {
+                              return SingleChildScrollView(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -327,120 +321,119 @@ class _HomeScreenState extends State<HomeScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(children: [
-                                          Image.asset(
-                                            'assets/13.png',
-                                            scale: 8,
-                                          ),
-                                          const SizedBox(width: 5),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const Text(
-                                                'Temp Max',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.w300),
-                                              ),
-                                              const SizedBox(height: 3),
-                                              Text(
-                                                "${state.weather.tempMax!.celsius!.round()} °C",
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.w700),
-                                              ),
-                                            ],
-                                          )
-                                        ]),
-                                        Row(children: [
-                                          Image.asset(
-                                            'assets/14.png',
-                                            scale: 8,
-                                          ),
-                                          const SizedBox(width: 5),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const Text(
-                                                'Temp Min',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.w300),
-                                              ),
-                                              const SizedBox(height: 3),
-                                              Text(
-                                                "${state.weather.tempMin!.celsius!.round()} °C",
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.w700),
-                                              ),
-                                            ],
-                                          )
-                                        ])
+                                        Row(
+                                          children: [
+                                            Image.asset(
+                                              'assets/13.png',
+                                              scale: 8,
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const Text(
+                                                  'Temp Max',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w300),
+                                                ),
+                                                const SizedBox(height: 3),
+                                                Text(
+                                                  "${state.weather.tempMax!.celsius!.round()} °C",
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Image.asset(
+                                              'assets/14.png',
+                                              scale: 8,
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const Text(
+                                                  'Temp Min',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w300),
+                                                ),
+                                                const SizedBox(height: 3),
+                                                Text(
+                                                  "${state.weather.tempMin!.celsius!.round()} °C",
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
-                                    //SizedBox(height: 30),
                                     const SizedBox(height: 40),
-                                    Expanded(
-                                      child: Align(
-                                        alignment:
-                                            FractionalOffset.bottomCenter,
-                                        child: Center(
-                                          child: SlidingSwitch(
-                                            value: false,
-                                            width: 250,
-                                            onChanged: (bool value) {},
-                                            height: 35,
-                                            animationDuration: const Duration(
-                                                milliseconds: 400),
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          AirConditionScreen(
-                                                            colorUp: colorUp,
-                                                            colorDown:
-                                                                colorDown,
-                                                            position:
-                                                                widget.position,
-                                                          )));
-                                            },
-                                            onDoubleTap: () {},
-                                            onSwipe: () {},
-                                            textOff: "Weather",
-                                            textOn: "Air Condition",
-                                            colorOn: const Color(0xffdc6c73),
-                                            colorOff: const Color(0xff6682c0),
-                                            background: const Color.fromARGB(
-                                                43, 204, 203, 203),
-                                            buttonColor: const Color.fromARGB(
-                                                42, 247, 245, 247),
-                                            inactiveColor:
-                                                const Color(0xff636f7b),
-                                          ),
+                                    Align(
+                                      alignment: FractionalOffset.bottomCenter,
+                                      child: Center(
+                                        child: SlidingSwitch(
+                                          value: false,
+                                          width: 250,
+                                          onChanged: (bool value) {},
+                                          height: 35,
+                                          animationDuration:
+                                              const Duration(milliseconds: 400),
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        AirConditionScreen(
+                                                          colorUp: colorUp,
+                                                          colorDown: colorDown,
+                                                        )));
+                                          },
+                                          onDoubleTap: () {},
+                                          onSwipe: () {},
+                                          textOff: "Weather",
+                                          textOn: "Air Condition",
+                                          colorOn: const Color(0xffdc6c73),
+                                          colorOff: const Color(0xff6682c0),
+                                          background: const Color.fromARGB(
+                                              43, 204, 203, 203),
+                                          buttonColor: const Color.fromARGB(
+                                              42, 247, 245, 247),
+                                          inactiveColor:
+                                              const Color(0xff636f7b),
                                         ),
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
-                              ),
-                            );
-                          } else {
-                            return Container();
-                          }
-                        },
-                      )
-                    ],
-                  );
-                }
-              }),
+                              );
+                            } else {
+                              return Container();
+                            }
+                          },
+                        ),
+                      ],
+                    );
+                  }
+                },
+              ),
+            );
+          },
         ),
       ),
     );

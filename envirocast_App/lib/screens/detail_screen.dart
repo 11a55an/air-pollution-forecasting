@@ -286,10 +286,10 @@ class DayForecastCard extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DayForecastCardState createState() => _DayForecastCardState();
+  DayForecastCardState createState() => DayForecastCardState();
 }
 
-class _DayForecastCardState extends State<DayForecastCard> {
+class DayForecastCardState extends State<DayForecastCard> {
   bool _expanded = false;
 
   List<FlSpot> getGraphData() {

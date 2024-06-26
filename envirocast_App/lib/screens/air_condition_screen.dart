@@ -3,29 +3,24 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:envirocast/notifications_controller.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:kdgaugeview/kdgaugeview.dart';
-import 'package:sliding_switch/sliding_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'home_screen.dart';
 import 'outdoor_screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:geolocator/geolocator.dart';
 
 class AirConditionScreen extends StatefulWidget {
   final Color colorUp;
   final Color colorDown;
-  final Position position;
   const AirConditionScreen({
     Key? key,
     required this.colorUp,
     required this.colorDown,
-    required this.position,
   }) : super(key: key);
   @override
-  _AirConditionScreenState createState() => _AirConditionScreenState();
+  AirConditionScreenState createState() => AirConditionScreenState();
 }
 
-class _AirConditionScreenState extends State<AirConditionScreen> {
+class AirConditionScreenState extends State<AirConditionScreen> {
   late final stream = FirebaseDatabase.instance.ref('sensor_data').onValue;
 
   @override
@@ -67,55 +62,57 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
               final mq5 = data['mq5'];
               final mq7 = data['mq7'];
               final temperature = data['temperature'];
-              if (dust > 150.0) {
+              if (dust > 150.0 &&
+                  !NotificationsController.activeNotifications.contains(1)) {
                 AwesomeNotifications().createNotification(
                     content: NotificationContent(
                         id: 1,
                         channelKey: "envirocast",
                         title: "Too much Dust",
-                        body: "The amount of dust indoor is too high at" +
-                            dust.toString()));
+                        body:
+                            "The amount of dust indoor is too high at $dust"));
               }
 
-              if (mq5 > 100.0) {
+              if (mq5 > 100.0 &&
+                  !NotificationsController.activeNotifications.contains(2)) {
                 AwesomeNotifications().createNotification(
                     content: NotificationContent(
-                        id: 1,
+                        id: 2,
                         channelKey: "envirocast",
                         title: "Too much LPG",
-                        body: "The amount of LPG indoor is too high at" +
-                            mq5.toString()));
+                        body: "The amount of LPG indoor is too high at $mq5"));
               }
 
-              if (mq135 > 80.0) {
+              if (mq135 > 80.0 &&
+                  !NotificationsController.activeNotifications.contains(3)) {
                 AwesomeNotifications().createNotification(
                     content: NotificationContent(
-                        id: 1,
+                        id: 3,
                         channelKey: "envirocast",
                         title: "Too much Natural Gas",
                         body:
-                            "The amount of natural gas indoor is too high at" +
-                                mq135.toString()));
+                            "The amount of natural gas indoor is too high at $mq135"));
               }
 
-              if (mq7 > 50.0) {
+              if (mq7 > 50.0 &&
+                  !NotificationsController.activeNotifications.contains(4)) {
                 AwesomeNotifications().createNotification(
                     content: NotificationContent(
-                        id: 1,
+                        id: 4,
                         channelKey: "envirocast",
                         title: "Too much CO",
-                        body: "The amount of CO indoor is too high at" +
-                            mq7.toString()));
+                        body: "The amount of CO indoor is too high at $mq7"));
               }
 
-              if (humidity > 70.0) {
+              if (humidity > 70.0 &&
+                  !NotificationsController.activeNotifications.contains(5)) {
                 AwesomeNotifications().createNotification(
                     content: NotificationContent(
-                        id: 1,
+                        id: 5,
                         channelKey: "envirocast",
                         title: "Too much Humidity",
-                        body: "The value of humidity indoor is too high at" +
-                            humidity.toString()));
+                        body:
+                            "The value of humidity indoor is too high at $humidity"));
               }
               return Padding(
                 padding:
@@ -163,7 +160,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
                       ),
                     ),
                     SingleChildScrollView(
-                      child: Container(
+                      child: SizedBox(
                         width: MediaQuery.of(context).size.width,
                         height: 850,
                         child: Column(
@@ -172,7 +169,6 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
                             const SizedBox(
                               height: 8,
                             ),
-
                             const Center(
                               child: Text(
                                 'Indoor Air Data',
@@ -187,7 +183,7 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
                               padding: EdgeInsets.symmetric(vertical: 10.0),
                             ),
                             Center(
-                              child: Container(
+                              child: SizedBox(
                                 width: 320,
                                 height: 300,
                                 child: Center(
@@ -220,7 +216,6 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
                                 ),
                               ),
                             ),
-
                             Center(
                               child: ElevatedButton(
                                 onPressed: () {
@@ -228,7 +223,6 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => OutdoorScreen(
-                                              position: widget.position,
                                               colorUp: widget.colorUp,
                                               colorDown: widget.colorDown,
                                             )),
@@ -256,11 +250,9 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
                                 ),
                               ),
                             ),
-
                             const Padding(
                               padding: EdgeInsets.symmetric(vertical: 10.0),
                             ),
-
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -332,14 +324,12 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
                                 ),
                               ],
                             ),
-
                             const Padding(
                               padding: EdgeInsets.symmetric(vertical: 14.0),
                               child: Divider(
                                 color: Colors.grey,
                               ),
                             ),
-
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -411,14 +401,12 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
                                 ),
                               ],
                             ),
-
                             const Padding(
                               padding: EdgeInsets.symmetric(vertical: 15.0),
                               child: Divider(
                                 color: Colors.grey,
                               ),
                             ),
-
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -487,41 +475,6 @@ class _AirConditionScreenState extends State<AirConditionScreen> {
                                   ],
                                 ),
                               ],
-                            ),
-
-                            const SizedBox(height: 30),
-                            // Sliding switch for weather and air condition
-                            Align(
-                              alignment: FractionalOffset.bottomCenter,
-                              child: Center(
-                                child: SlidingSwitch(
-                                  value: true,
-                                  width: 250,
-                                  onChanged: (bool value) {},
-                                  height: 35,
-                                  animationDuration:
-                                      const Duration(milliseconds: 400),
-                                  onTap: () {
-                                    Navigator.pop(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => HomeScreen(
-                                                  position: widget.position,
-                                                )));
-                                  },
-                                  onDoubleTap: () {},
-                                  onSwipe: () {},
-                                  textOff: "Weather",
-                                  textOn: "Air Condition",
-                                  colorOn: const Color(0xffdc6c73),
-                                  colorOff: const Color(0xff6682c0),
-                                  background:
-                                      const Color.fromARGB(43, 204, 203, 203),
-                                  buttonColor:
-                                      const Color.fromARGB(42, 247, 245, 247),
-                                  inactiveColor: const Color(0xff636f7b),
-                                ),
-                              ),
                             ),
                           ],
                         ),

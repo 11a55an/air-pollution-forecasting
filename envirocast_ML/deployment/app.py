@@ -81,25 +81,6 @@ temp_model = load_model("1dcnn_temp.keras")
 # Forecast Next 168 Steps
 def forecast_next_steps(model, data, n_steps=168):
     predicted_value = model.predict(data.reshape(1, 168, 1))
-    # print(predicted_value)
-    # forecast = []
-    # data = np.array(data).reshape((1, 1, len(data)))
-    # # Reverse the array
-    # data = data[::-1]
-
-    # for _ in range(n_steps):
-    #     # Make prediction
-    #     yhat = model.predict(data, verbose=0)
-        
-    #     # Append the prediction to forecast
-    #     forecast.append(yhat[0, 0])
-        
-    #     # Update data with the new predicted value
-    #     yhat = yhat.reshape((1, 1, 1))  # Reshape yhat to 3D
-    #     data = np.append(data[:, :, 1:], yhat, axis=2)
-
-    # # Convert forecast back to original scale
-    # forecast = np.array(forecast)
     return predicted_value
 
 # Fetch Pollution Data

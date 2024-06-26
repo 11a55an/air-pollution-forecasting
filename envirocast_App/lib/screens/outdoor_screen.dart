@@ -12,18 +12,17 @@ import 'package:geolocator/geolocator.dart';
 class OutdoorScreen extends StatelessWidget {
   final Color colorUp;
   final Color colorDown;
-  final Position position;
   const OutdoorScreen({
     Key? key,
-    required this.position,
     required this.colorUp,
     required this.colorDown,
   }) : super(key: key);
   Future<Map<String, dynamic>> fetchAirData() async {
+    Position position = await Geolocator.getCurrentPosition();
     final double lat = position.latitude;
     final double lon = position.longitude;
     final response = await http.get(Uri.parse(
-        'https://api.weatherbit.io/v2.0/history/airquality?city=Gujrat&tz=local&key=4aa42fc9ef084abf8b9c0656acf29d38'));
+        'https://api.weatherbit.io/v2.0/history/airquality?lat=$lat&lon=$lon&tz=local&key=4aa42fc9ef084abf8b9c0656acf29d38'));
     final responsePred = await http.post(Uri.parse(
         'http://ec2-16-16-98-137.eu-north-1.compute.amazonaws.com:8080/all'));
 
@@ -39,7 +38,7 @@ class OutdoorScreen extends StatelessWidget {
 
     // Construct the URL with query parameters
     String url =
-        'https://api.weatherbit.io/v2.0/history/hourly?city=Gujrat&tz=local&start_date=$formattedStartDate&end_date=$formattedEndDate&key=4aa42fc9ef084abf8b9c0656acf29d38';
+        'https://api.weatherbit.io/v2.0/history/hourly?lat=$lat&lon=$lon&tz=local&start_date=$formattedStartDate&end_date=$formattedEndDate&key=4aa42fc9ef084abf8b9c0656acf29d38';
 
     // Make the HTTP GET request
     final responseTemp = await http.get(Uri.parse(url));
@@ -91,7 +90,6 @@ class OutdoorScreen extends StatelessWidget {
                 SampleWeatherData sampleWeatherData =
                     snapshot.data!['weatherData'];
                 SamplePredData samplePredData = snapshot.data!['predData'];
-                print(samplePredData.aqi.length);
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(
                       40, 1.2 * kToolbarHeight, 40, 20),
@@ -140,7 +138,7 @@ class OutdoorScreen extends StatelessWidget {
                           ),
                         ),
                         SingleChildScrollView(
-                          child: Container(
+                          child: SizedBox(
                             width: MediaQuery.of(context).size.width,
                             height: 990,
                             child: Column(
@@ -163,7 +161,7 @@ class OutdoorScreen extends StatelessWidget {
                                   padding: EdgeInsets.symmetric(vertical: 10.0),
                                 ),
                                 Center(
-                                  child: Container(
+                                  child: SizedBox(
                                     width: 320,
                                     height: 300,
                                     child: Center(
