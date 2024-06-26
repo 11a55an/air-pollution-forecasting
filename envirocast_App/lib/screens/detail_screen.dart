@@ -101,7 +101,7 @@ class DetailScreen extends StatelessWidget {
     final DateTime startOfCurrentHour =
         DateTime(now.year, now.month, now.day, now.hour);
     final List<PollutantData> forecastData = List.generate(
-      168, // 7 days * 24 hours
+      168,
       (index) => PollutantData(
         dateTime: startOfCurrentHour.add(Duration(hours: index + 1)),
         value: forecastValues[index % forecastValues.length],

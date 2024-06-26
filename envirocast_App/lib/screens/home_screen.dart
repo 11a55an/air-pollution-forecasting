@@ -1,4 +1,6 @@
 import 'dart:ui';
+import 'dart:async';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sliding_switch/sliding_switch.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 import 'air_condition_screen.dart';
+import 'dart:developer' as developer;
 
 class HomeScreen extends StatefulWidget {
   final Position position;
@@ -23,11 +26,46 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<ConnectivityResult> _connectionStatus = [ConnectivityResult.none];
+  final Connectivity _connectivity = Connectivity();
+  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
+  bool isConnected = true;
   late Future<String> cityNameFuture;
 
   @override
   void initState() {
     super.initState();
+    initConnectivity();
+  }
+
+  Future<void> initConnectivity() async {
+    try {
+      final result = await _connectivity.checkConnectivity();
+      _updateConnectionStatus(result);
+      _connectivitySubscription =
+          _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+    } on PlatformException catch (e) {
+      developer.log('Couldn\'t check connectivity status', error: e);
+    }
+  }
+
+  Future<void> _updateConnectionStatus(List<ConnectivityResult> result) async {
+    setState(() {
+      _connectionStatus = result;
+      if (result.contains(ConnectivityResult.none)) {
+        isConnected = false;
+      } else {
+        isConnected = true;
+      }
+    });
+    // ignore: avoid_print
+    print('Connectivity changed: $_connectionStatus');
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
   }
 
   Future<Map<String, dynamic>> fetchAirData() async {
@@ -140,7 +178,37 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Error: ${snapshot.error}',
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    });
+                    return const Center(
+                      child: Text(
+                        'An error occurred',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    );
+                  } else if (!isConnected) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Unable to connect to the internet',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    });
+                    return const SizedBox
+                        .shrink(); // Return an empty widget when disconnected
                   } else {
                     Map<String, dynamic> tempData = snapshot.data!['tempData'];
                     return Stack(

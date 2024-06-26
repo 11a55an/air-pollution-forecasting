@@ -84,7 +84,23 @@ class OutdoorScreen extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Error: ${snapshot.error}',
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                });
+                return const Center(
+                  child: Text(
+                    'An error occurred',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                );
               } else {
                 SampleAirData sampleAirData = snapshot.data!['airData'];
                 SampleWeatherData sampleWeatherData =
