@@ -177,6 +177,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
+                  } else if (!isConnected) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Unable to connect to the internet',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    });
+                    return const Center(
+                      child: Text(
+                        'No Internet Connection',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    );
                   } else if (snapshot.hasError) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -195,20 +213,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(color: Colors.white),
                       ),
                     );
-                  } else if (!isConnected) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Unable to connect to the internet',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    });
-                    return const SizedBox
-                        .shrink(); // Return an empty widget when disconnected
                   } else {
                     Map<String, dynamic> tempData = snapshot.data!['tempData'];
                     return Stack(

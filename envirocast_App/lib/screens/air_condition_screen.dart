@@ -95,6 +95,24 @@ class AirConditionScreenState extends State<AirConditionScreen> {
             return const Center(
               child: CircularProgressIndicator(),
             );
+          } else if (!isConnected) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Unable to connect to the internet',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            });
+            return const Center(
+              child: Text(
+                'No Internet Connection',
+                style: TextStyle(color: Colors.white),
+              ),
+            );
           } else if (snapshot.hasError) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -113,20 +131,6 @@ class AirConditionScreenState extends State<AirConditionScreen> {
                 style: TextStyle(color: Colors.white),
               ),
             );
-          } else if (!isConnected) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'Unable to connect to the internet',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            });
-            return const SizedBox
-                .shrink(); // Return an empty widget when disconnected
           } else if (snapshot.hasData) {
             final data = snapshot.data?.snapshot.value as Map?;
             if (data == null) {
@@ -442,7 +446,7 @@ class AirConditionScreenState extends State<AirConditionScreen> {
                               ),
                               const SizedBox(height: 3),
                               Text(
-                                '$mq5',
+                                mq5.toStringAsFixed(0),
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w700,
@@ -485,7 +489,7 @@ class AirConditionScreenState extends State<AirConditionScreen> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                '$mq135',
+                                mq135.toStringAsFixed(0),
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w700,
@@ -517,7 +521,7 @@ class AirConditionScreenState extends State<AirConditionScreen> {
                               ),
                               const SizedBox(height: 3),
                               Text(
-                                '$dust',
+                                dust.toStringAsFixed(0),
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w700,
@@ -560,7 +564,7 @@ class AirConditionScreenState extends State<AirConditionScreen> {
                               ),
                               const SizedBox(height: 3),
                               Text(
-                                '$humidity',
+                                humidity.toStringAsFixed(0),
                                 style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w700,
@@ -591,7 +595,7 @@ class AirConditionScreenState extends State<AirConditionScreen> {
                               ),
                               const SizedBox(height: 3),
                               Text(
-                                '$mq7',
+                                mq7.toStringAsFixed(0),
                                 style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w700,

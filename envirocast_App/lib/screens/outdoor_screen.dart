@@ -86,10 +86,10 @@ class OutdoorScreen extends StatelessWidget {
               } else if (snapshot.hasError) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
+                    const SnackBar(
                       content: Text(
-                        'Error: ${snapshot.error}',
-                        style: const TextStyle(color: Colors.white),
+                        'Unable to connect to Internet',
+                        style: TextStyle(color: Colors.white),
                       ),
                       backgroundColor: Colors.red,
                     ),
@@ -97,7 +97,7 @@ class OutdoorScreen extends StatelessWidget {
                 });
                 return const Center(
                   child: Text(
-                    'An error occurred',
+                    'No Internet Connection',
                     style: TextStyle(color: Colors.white),
                   ),
                 );
@@ -247,7 +247,9 @@ class OutdoorScreen extends StatelessWidget {
                                                       predictedValue:
                                                           samplePredData
                                                               .temp[0],
-                                                      speedValue: 45,
+                                                      speedValue:
+                                                          sampleWeatherData.temp
+                                                              .toDouble(),
                                                       colorUp: colorUp,
                                                       colorDown: colorDown,
                                                     )));
@@ -318,7 +320,9 @@ class OutdoorScreen extends StatelessWidget {
                                                               .toDouble(),
                                                       predictedValue:
                                                           samplePredData.aqi[0],
-                                                      speedValue: 145,
+                                                      speedValue: sampleAirData
+                                                          .aqi
+                                                          .toDouble(),
                                                       colorUp: colorUp,
                                                       colorDown: colorDown,
                                                     )));
@@ -401,7 +405,9 @@ class OutdoorScreen extends StatelessWidget {
                                                               .toDouble(),
                                                       predictedValue:
                                                           samplePredData.co[0],
-                                                      speedValue: 101,
+                                                      speedValue: sampleAirData
+                                                          .co
+                                                          .toDouble(),
                                                       colorUp: colorUp,
                                                       colorDown: colorDown,
                                                     )));
@@ -473,7 +479,9 @@ class OutdoorScreen extends StatelessWidget {
                                                               .toDouble(),
                                                       predictedValue:
                                                           samplePredData.no2[0],
-                                                      speedValue: 200,
+                                                      speedValue: sampleAirData
+                                                          .no2
+                                                          .toDouble(),
                                                       colorUp: colorUp,
                                                       colorDown: colorDown,
                                                     )));
@@ -557,7 +565,9 @@ class OutdoorScreen extends StatelessWidget {
                                                               .toDouble(),
                                                       predictedValue:
                                                           samplePredData.o3[0],
-                                                      speedValue: 45,
+                                                      speedValue: sampleAirData
+                                                          .o3
+                                                          .toDouble(),
                                                       colorUp: colorUp,
                                                       colorDown: colorDown,
                                                     )));
@@ -626,7 +636,9 @@ class OutdoorScreen extends StatelessWidget {
                                                               .toDouble(),
                                                       predictedValue:
                                                           samplePredData.so2[0],
-                                                      speedValue: 120,
+                                                      speedValue: sampleAirData
+                                                          .so2
+                                                          .toDouble(),
                                                       colorUp: colorUp,
                                                       colorDown: colorDown,
                                                     )));
@@ -708,7 +720,9 @@ class OutdoorScreen extends StatelessWidget {
                                                       predictedValue:
                                                           samplePredData
                                                               .pm25[0],
-                                                      speedValue: 65,
+                                                      speedValue: sampleAirData
+                                                          .pm25
+                                                          .toDouble(),
                                                       colorUp: colorUp,
                                                       colorDown: colorDown,
                                                     )));
@@ -778,7 +792,9 @@ class OutdoorScreen extends StatelessWidget {
                                                       predictedValue:
                                                           samplePredData
                                                               .pm10[0],
-                                                      speedValue: 75,
+                                                      speedValue: sampleAirData
+                                                          .pm10
+                                                          .toDouble(),
                                                       colorUp: colorUp,
                                                       colorDown: colorDown,
                                                     )));
