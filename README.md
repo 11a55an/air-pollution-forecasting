@@ -38,17 +38,17 @@ Envirocast is a real-time air monitoring and forecasting system that provides mo
 
 ## Screenshots
 
-<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/splash.png" alt="Splash Screen" width="100" height="300">
+<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/splash.png" alt="Splash Screen" width="150" height="300">
 
-<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/home.png" alt="Home Screen" width="100" height="300">
+<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/home.png" alt="Home Screen" width="150" height="300">
 
-<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/indoor.png" alt="Indoor Screen" width="100" height="300">
+<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/indoor.png" alt="Indoor Screen" width="150" height="300">
 
-<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/outdoor.png" alt="Outdoor Screen" width="100" height="300">
+<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/outdoor.png" alt="Outdoor Screen" width="150" height="300">
 
-<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/forecast.png" alt="Forecast Screen" width="100" height="300">
+<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/forecast.png" alt="Forecast Screen" width="150" height="300">
 
-<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/detail.png" alt="Detail Screen" width="100" height="300">
+<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/detail.png" alt="Detail Screen" width="150" height="300">
 
 ## Contributors
 
