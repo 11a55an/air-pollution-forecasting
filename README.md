@@ -38,12 +38,17 @@ Envirocast is a real-time air monitoring and forecasting system that provides mo
 
 ## Screenshots
 
-![Splash Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/splash.png)
-![Home Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/home.png)
-![Indoor Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/indoor.png)
-![Outdoor Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/outdoor.png)
-![Forecast Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/forecast.png)
-![Detail Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/detail.png)
+![Splash Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/splash.png){width=100 height=200}
+
+![Home Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/home.png){width=100 height=200}
+
+![Indoor Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/indoor.png){width=100 height=200}
+
+![Outdoor Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/outdoor.png){width=100 height=200}
+
+![Forecast Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/forecast.png){width=100 height=200}
+
+![Detail Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/detail.png){width=100 height=200}
 
 ## Contributors
 
