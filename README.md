@@ -36,6 +36,15 @@ Envirocast is a real-time air monitoring and forecasting system that provides mo
 - **envirocast_ML:** Contains notebooks/scripts for data preprocessing, model training, and evaluation.
 - **envirocast_App:** Flutter code for the mobile application.
 
+## Screenshots
+
+![Splash Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/splash.png)
+![Home Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/home.png)
+![Indoor Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/indoor.png)
+![Outdoor Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/outdoor.png)
+![Forecast Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/forecast.png)
+![Detail Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/detail.png)
+
 ## Contributors
 
 - [Meerab Irfan](https://github.com/Meer03)
