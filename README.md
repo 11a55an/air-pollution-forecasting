@@ -38,17 +38,17 @@ Envirocast is a real-time air monitoring and forecasting system that provides mo
 
 ## Screenshots
 
-![Splash Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/splash.png){width=100 height=200}
+<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/splash.png" alt="Splash Screen" width="100" height="300">
 
-![Home Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/home.png){width=100 height=200}
+<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/home.png" alt="Home Screen" width="100" height="300">
 
-![Indoor Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/indoor.png){width=100 height=200}
+<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/indoor.png" alt="Indoor Screen" width="100" height="300">
 
-![Outdoor Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/outdoor.png){width=100 height=200}
+<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/outdoor.png" alt="Outdoor Screen" width="100" height="300">
 
-![Forecast Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/forecast.png){width=100 height=200}
+<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/forecast.png" alt="Forecast Screen" width="100" height="300">
 
-![Detail Screen](https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/detail.png){width=100 height=200}
+<img src="https://github.com/11a55an/air-pollution-forecasting/blob/main/envirocast_App/screenshots/detail.png" alt="Detail Screen" width="100" height="300">
 
 ## Contributors
 
